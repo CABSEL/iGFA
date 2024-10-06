@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import pathlib
 import sys
-subfolder = pathlib.Path(__file__).parents[2].resolve()/'code/src/gfapy'
+subfolder = pathlib.Path(__file__).parents[2].resolve()/'src/gfapy'
 sys.path.insert(0, subfolder.as_posix())
 
 project = 'iGFA'
