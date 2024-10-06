@@ -1,0 +1,8 @@
+/* Increase the sidebar width */
+div.sphinxsidebar {
+    width: 20em; /* Adjust the width as needed */
+}
+
+div.body {
+    padding: 0 5em 0 5em;
+}
