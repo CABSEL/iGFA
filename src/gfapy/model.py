@@ -9,12 +9,29 @@ from pyomo.contrib.multistart.reinit import reinitialize_variables
 
 class parse_model_generic():
     def __init__(self, stoich, feat_meta, met_meta, n_comp, lin_rxns, name=None, author=None):
-        '''
+        """
+        Initializes the parse_model_generic class.
+
         Necessary columns in excel file:
-        stoich (index - glycoform id): Should be all numbers
-        feat_meta (index - reactions): Enzymes, Interactive plotting(Genes)
-        met_meta (index - glycoform id): Interactive plotting(Structure, Compartment)
-        '''
+        - stoich (index - glycoform id): Should be all numbers.
+        - feat_meta (index - reactions): Enzymes, Interactive plotting (Genes).
+        - met_meta (index - glycoform id): Interactive plotting (Structure, Compartment).
+
+        :param stoich: Stoichiometry matrix of reactions.
+        :type stoich: pd.DataFrame
+        :param feat_meta: Feature metadata including enzyme information.
+        :type feat_meta: pd.DataFrame
+        :param met_meta: Metabolite metadata for glycoform id.
+        :type met_meta: pd.DataFrame
+        :param n_comp: Number of compartments.
+        :type n_comp: int
+        :param lin_rxns: List of linear reactions.
+        :type lin_rxns: list[str]
+        :param name: Name of the model (optional).
+        :type name: str, optional
+        :param author: Author of the model (optional).
+        :type author: str, optional
+        """
 
         self.name = name if name else None
         self.author = author if author else None
@@ -43,11 +60,35 @@ class parse_model_generic():
                                             columns=self.feat_meta.index[self.feat_meta['internal']])
 
     def _read_core(self, data, time_data):
+        """
+        Reads core data including titer and VCD.
+
+        :param data: Data containing titer and VCD values.
+        :type data: pd.DataFrame
+        :param time_data: Time data for the experiments.
+        :type time_data: pd.Series
+        """
         self.time_col = time_data
         self.titer = data['Titer'].sort_index(axis='index')
         self.vcd = data['VCD'].sort_index(axis='index')
 
     def run_multistart(self, instance, strategy='rand', iterations=100, suppress_warning=True, solver_options=None):
+        """
+        Runs a multi-start optimization for the given instance.
+
+        :param instance: The Pyomo model instance to be solved.
+        :type instance: pyo.ConcreteModel
+        :param strategy: The strategy for multi-start optimization (default is 'rand').
+        :type strategy: str, optional
+        :param iterations: The number of iterations to run (default is 100).
+        :type iterations: int, optional
+        :param suppress_warning: Flag to suppress warnings (default is True).
+        :type suppress_warning: bool, optional
+        :param solver_options: Additional solver options to configure.
+        :type solver_options: dict[str, any], optional
+        :return: A tuple containing the results dictionary and the status run dictionary.
+        :rtype: tuple[dict[int, any], dict[str, list[int]]]
+        """
         # Should be moved to generic parse_model?
         config = namedtuple("CONFIG", ["strategy", "iterations", "suppress_unbounded_warning"])
         CONFIG = config(strategy=strategy, iterations=iterations, suppress_unbounded_warning=suppress_warning)
@@ -103,6 +144,16 @@ class parse_model_generic():
         return results_dict, status_run
 
     def run_singlestart(self, instance, solver_options=None):
+        """
+        Runs a single-start optimization for the given instance.
+
+        :param instance: The Pyomo model instance to be solved.
+        :type instance: pyo.ConcreteModel
+        :param solver_options: Additional solver options to configure.
+        :type solver_options: dict[str, any], optional
+        :return: A dictionary containing the results of the optimization.
+        :rtype: dict[str, any]
+        """
         solver = pyo.SolverFactory('ipopt')
         default_solver_options = {'max_iter': 100000,
                                   'linear_solver': 'mumps',
@@ -122,6 +173,12 @@ class parse_model_generic():
 
 
 def summarize_instance(instance):
+    """
+    Summarizes the instance by printing the statistics, variable names, constraint names, and objective names.
+
+    :param instance: The Pyomo model instance to summarize.
+    :type instance: pyo.ConcreteModel
+    """
     instance.compute_statistics()
     print(instance.statistics)
     print('\n')

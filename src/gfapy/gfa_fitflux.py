@@ -61,7 +61,7 @@ class parse_model(parse_model_generic):
         self.time_col = time_data
         # self._read_core(data, time_data=self.glyco_flux.index.tolist())
 
-    def fetch_data(self, spec_prod_col='Spec Prod (pg/cells/day)'): #, vcd_col='VCD (1E6 VC/mL)', titer_col='Titer (g/L)' CHANGED FOR FITTING FLUXES
+    def fetch_data(self, spec_prod_col='Spec Prod (pg/cells/day)'):  # , vcd_col='VCD (1E6 VC/mL)', titer_col='Titer (g/L)'
         """
         Fetch and organize relevant data.
 
@@ -89,7 +89,7 @@ class parse_model(parse_model_generic):
         :rtype: pyo.AbstractModel
         """
         model = pyo.AbstractModel()
-        model.name = 'iGFA'
+        model.name = 'GFA'
         model.n_comp = self.n_comp
         model.substrate = pyo.Set(initialize=self.substrate, dimen=1)
         model.mets = pyo.Set(initialize=self.met_meta.index.tolist(), dimen=1)
@@ -114,12 +114,8 @@ class parse_model(parse_model_generic):
         model.v_ref = pyo.Var(model.nonlin_rxns, domain=pyo.NonNegativeReals, bounds=(0, 100))
 
         def alpha_bounds(m, i, j):
-            return (1, 1) if i == m.timepoints.at(1) else (0, 10)
+            return (1, 1) if i == m.timepoints.at(1) else (0, 20)
         model.alpha = pyo.Var(model.timepoints, model.enzymes, domain=pyo.NonNegativeReals, bounds=alpha_bounds)
-
-        def beta_bounds(m, i, j):
-            return (1, 1) if i == m.timepoints.at(1) else (0, 15)
-        model.beta = pyo.Var(model.timepoints, model.beta_mets, domain=pyo.NonNegativeReals, bounds=beta_bounds)
 
         def gamma_bounds(m, i):
             return (1, 1) if i == m.timepoints.at(1) else (0, 10)
@@ -129,7 +125,7 @@ class parse_model(parse_model_generic):
         @model.Expression(model.timepoints, model.internal_rxns)
         def internal_flux(m, i, j):
             if j in m.nonlin_rxns:
-                return m.alpha[i, self.enzymes[j]]*m.beta[i, self.producers[j]]*m.gamma[i]*m.v_ref[j]
+                return m.alpha[i, self.enzymes[j]]*m.gamma[i]*m.v_ref[j]
             else:
                 return m.lin_flux[i, j]
 
@@ -140,21 +136,8 @@ class parse_model(parse_model_generic):
 
         return model
 
-    def create_pyomomodel(self, fit_beta='fitted', regularize_params=True):
-        """
-        Create and configure the Pyomo model for optimization.
-
-        :param fit_beta: Flag indicating whether to fit beta parameters (default is 'fitted'). Can be 'fitted', 'measured' or None. If None, betas will not be fitted to secreted flux ratio
-        :type fit_beta: str
-        :param regularize_params: Flag indicating whether to apply regularization (default is True).
-        :type regularize_params: bool
-        :return: Configured Pyomo model instance.
-        :rtype: pyo.AbstractModel
-        """
+    def create_pyomomodel(self, fit_beta=True, regularize_params=True):
         model = self._init_pyomomodel()
-
-        if fit_beta is not None:
-            fit_flag = True
 
         # Data
         model.spec_prod = pyo.Param(model.timepoints_data)
@@ -170,9 +153,7 @@ class parse_model(parse_model_generic):
 
             @model.Constraint()
             def min_params(m):
-                return (sum((m.alpha[i, j] - 1)**2 for i in m.timepoints for j in m.enzymes) +
-                        # sum(abs(m.beta[i, j] - 1) for i in m.timepoints for j in m.beta_mets) +
-                        sum((m.gamma[i] - 1)**2 for i in m.timepoints)) <= m.reg_param
+                return (sum((m.alpha[i, j] - 1)**2 for i in m.timepoints for j in m.enzymes)) <= m.reg_param
 
             # @model.Expression()
             # def min_params(m):
@@ -189,12 +170,8 @@ class parse_model(parse_model_generic):
 
         @model.Expression()
         def fit_betas(m):
-            if fit_beta == 'fitted':
-                return sum(((m.secreted_flux[i, j] - (m.beta[i, j]*m.secreted_flux[m.timepoints.at(1), j]))**2)/m.spec_prod[i]
-                           for i in m.timepoints for j in m.beta_mets)
-            elif fit_beta == 'measured':
-                return sum(((m.secreted_flux_data[i, j] - (m.beta[i, j]*m.secreted_flux_data[m.timepoints.at(1), j]))**2)/m.spec_prod[i]
-                           for i in m.timepoints for j in m.beta_mets)
+            return sum(((m.spec_prod[i] - (m.gamma[i]*m.spec_prod[m.timepoints.at(1)]))**2)/m.spec_prod[i]
+                       for i in m.timepoints)
 
         # @model.Constraint(model.timepoints, model.beta_mets)
         # def fit_betas(m, i, j):
@@ -208,7 +185,7 @@ class parse_model(parse_model_generic):
         # Objective
         @model.Objective(sense=pyo.minimize)
         def obj(m):
-            added_objective = m.fit_betas if fit_flag is True else 0
+            added_objective = m.fit_betas if fit_beta is True else 0
             return (m.fit_flux + m.fit_spec_prod + added_objective)  # CHANGED FOR FITTING FLUXES
 
         # @model.Objective(sense=pyo.minimize)
@@ -233,8 +210,6 @@ class parse_model(parse_model_generic):
 
         results['alpha'] = (pd.DataFrame({j: {i: pyo.value(instance.alpha[i, j]) for i in instance.timepoints_data} for j in instance.enzymes}).
                             rename_axis(index=self.time_col_name))
-        results['beta'] = (pd.DataFrame({j: {i: pyo.value(instance.beta[i, j]) for i in instance.timepoints_data} for j in instance.beta_mets}).
-                           rename_axis(index=self.time_col_name))
         results['gamma'] = pd.Series({i: pyo.value(instance.gamma[i]) for i in instance.timepoints_data}).to_frame(name='gamma').rename_axis(index=self.time_col_name)
         results['v_ref'] = (pd.Series({i: pyo.value(instance.v_ref[i]) for i in instance.nonlin_rxns}).to_frame(name='v_ref').
                             rename_axis(index='Reaction ID'))
@@ -244,8 +219,6 @@ class parse_model(parse_model_generic):
                                     rename_axis(index=self.time_col_name))
         results['entry_flux'] = (pd.DataFrame({j: {i: pyo.value(instance.entry_flux[i, j]) for i in instance.timepoints_data} for j in instance.substrate}).
                                  rename_axis(index=self.time_col_name))
-        results['secreted_flux_ratio'] = (pd.DataFrame({j: {i: pyo.value(instance.secreted_flux[i, j]/instance.secreted_flux[instance.timepoints.at(1), j]) for i in instance.timepoints_data} for j in instance.beta_mets}).
-                                          rename_axis(index=self.time_col_name))
 
         return results
 

@@ -5,7 +5,36 @@ import matplotlib.pyplot as plt
 
 
 class res_plotter_generic():
+    """
+    A generic result plotter class for analyzing and visualizing simulation results.
+
+    Attributes:
+        name (str): The name of the result plotter.
+        time_col_name (str): The name of the time column in the results.
+        results (dict): A dictionary containing the results of the simulation runs.
+        curr_ind (str): The current index for accessing results.
+        rxn_meta (pd.DataFrame): Reaction metadata, if provided.
+        met_meta (pd.DataFrame): Metabolite metadata, if provided.
+        model_summary (pd.DataFrame): Summary of the model runs.
+    """
     def __init__(self, results, multi_result=False, met_meta=None, rxn_meta=None, name=None, time_col_name='Time (WD)'):
+        """
+        Initializes the res_plotter_generic with the given results.
+
+        :param results: Results of the simulations.
+        :type results: dict
+        :param multi_result: Indicates if multiple results are provided.
+        :type multi_result: bool
+        :param met_meta: Metadata for metabolites.
+        :type met_meta: pd.DataFrame, optional
+        :param rxn_meta: Metadata for reactions.
+        :type rxn_meta: pd.DataFrame, optional
+        :param name: The name of the result plotter.
+        :type name: str, optional
+        :param time_col_name: The name of the time column.
+        :type time_col_name: str
+        :rtype: None
+        """
         self.name = name
         self.time_col_name = time_col_name
         if multi_result is False:
@@ -21,14 +50,21 @@ class res_plotter_generic():
         if met_meta is not None:
             self.met_meta = met_meta
 
-    def summarize_runs(self):
+    def summarize_runs(self, n_show=100):
+        """
+        Summarizes the simulation runs and generates a styled report.
+        :param n_show: Number of top results to show statistics for.
+        :type n_show: int
+        :return: A styled DataFrame summary of the runs.
+        :rtype: pd.io.formats.style.Styler
+        """
         color_cols = sorted(set(self.results[self.curr_ind]['objectives'].keys()) - {'message'})
         self.model_summary = (pd.DataFrame({k: v['objectives'] for k, v in self.results.items()}).
                               T.reset_index(names='Runs').
                               sort_values(by=['obj'] + sorted(set(color_cols) - {'obj'})).
-                              head(100))
+                              head(n_show))
         multistart_report = (self.model_summary.
-                             style.set_caption(f'<b>Objective in {len(self.results)} multistart runs sorted by objective (showing top {np.min([100, len(self.results)])})</b>').
+                             style.set_caption(f'<b>Objective in {len(self.results)} multistart runs sorted by objective (showing top {np.min([n_show, len(self.results)])})</b>').
                              hide(axis="index").
                              set_table_styles([{'selector': 'th:not(.index_name)',
                                                 'props': 'background-color: #000000; color: white;border-left: 1px solid white;border-top: 1px solid white;'},
@@ -41,6 +77,14 @@ class res_plotter_generic():
         return multistart_report
 
     def sel_result(self, res_index='Main'):
+        """
+        Selects a specific result by index.
+
+        :param res_index: The index of the result to select.
+        :type res_index: str
+        :raises ValueError: If the index is not found in the results.
+        :rtype: None
+        """
         if res_index in list(self.results.keys()):
             self.curr_ind = res_index
             print(self.results[self.curr_ind]['status']['Solver'])
@@ -50,12 +94,41 @@ class res_plotter_generic():
         self.curr_result = self.results[self.curr_ind]
 
     def choose_top_n(self, obj_col, n=10, ascending=True):
+        """
+        Chooses the top N results based on the specified objective column.
+
+        :param obj_col: The column name for objectives to sort by.
+        :type obj_col: str
+        :param n: The number of top results to return.
+        :type n: int
+        :param ascending: Whether to sort in ascending order.
+        :type ascending: bool
+        :return: A list of the top N result indices.
+        :rtype: list
+        """
         return self.model_summary.sort_values(by=obj_col, ascending=ascending).head(n)['Runs'].tolist()
 
     def get_params_n(self, n_res, param_col):
+        """
+        Retrieves parameters for a given list of results.
+
+        :param n_res: A list of result indices.
+        :type n_res: list
+        :param param_col: The column name of the parameters to retrieve.
+        :type param_col: str
+        :return: A DataFrame of the specified parameters.
+        :rtype: pd.DataFrame
+        """
         return pd.concat({e: self.results[e][param_col] for i, e in enumerate(n_res)})
 
     def sel_compartment(self, comp=1):
+        """
+        Selects the results for a specific compartment.
+
+        :param comp: The compartment index to select.
+        :type comp: int
+        :rtype: None
+        """
         self.curr_result['beta'] = self.curr_result['beta_allcomps'][comp]
         self.curr_result['gamma'] = self.curr_result['gamma_allcomps'][comp]
         self.curr_result['v_ref'] = self.curr_result['v_ref_allcomps'][comp]
@@ -64,6 +137,23 @@ class res_plotter_generic():
         self.curr_result['secreted_flux_ratio'] = self.curr_result['secreted_flux_ratio_allcomps'][comp]
 
     def plot_alphas(self, time_col, meas_cols=None, ncols=5, figsize=None, res_ids=None, **plot_kwargs):
+        """
+        Plots the alpha values over time.
+
+        :param time_col: The name of the time column.
+        :type time_col: str
+        :param meas_cols: The measurement columns to plot.
+        :type meas_cols: list, optional
+        :param ncols: The number of columns in the plot grid.
+        :type ncols: int
+        :param figsize: The size of the figure.
+        :type figsize: tuple, optional
+        :param res_ids: The result IDs to plot.
+        :type res_ids: list, optional
+        :param plot_kwargs: Additional keyword arguments for plotting.
+        :return: The created figure.
+        :rtype: plt.Figure
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -97,10 +187,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Alpha', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -108,6 +196,18 @@ class res_plotter_generic():
         return fig
 
     def plot_gamma(self, time_col='Time (WD)', meas_cols=None, ncols=5, figsize=None, res_ids=None, **plot_kwargs):
+        """
+        Plot gamma values over time.
+
+        :param time_col: The name of the time column, defaults to 'Time (WD)'.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param plot_kwargs: Additional keyword arguments for the plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -139,10 +239,8 @@ class res_plotter_generic():
                 sns.lineplot(data=orig_data, x=time_col, y=meas_cols[i], ax=axes[i], **default_plot_opts)
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Gamma', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -150,6 +248,18 @@ class res_plotter_generic():
         return fig
 
     def plot_entry_flux(self, time_col='Time (WD)', meas_cols=None, ncols=5, figsize=None, res_ids=None, **plot_kwargs):
+        """
+        Plot entry flux values over time.
+
+        :param time_col: The name of the time column, defaults to 'Time (WD)'.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param plot_kwargs: Additional keyword arguments for the plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -182,10 +292,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Entry Flux', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -193,6 +301,18 @@ class res_plotter_generic():
         return fig
 
     def plot_vref(self, x_col='Reactions', meas_cols=None, ncols=5, figsize=None, res_ids=None, **plot_kwargs):
+        """
+        Plot reference flux values.
+
+        :param x_col: The name of the x-axis column, defaults to 'Reactions'.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param plot_kwargs: Additional keyword arguments for the plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -226,10 +346,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Reference Flux', fontsize=13)
                 axes[i].set_ylim((0, axes[i].get_ylim()[1]))
             else:
@@ -238,6 +356,18 @@ class res_plotter_generic():
         return fig
 
     def plot_secretedflux(self, time_col, meas_cols=None, ncols=5, figsize=None, res_ids=None, **plot_kwargs):
+        """
+        Plot secreted flux values over time.
+
+        :param time_col: The name of the time column.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param plot_kwargs: Additional keyword arguments for the plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -271,10 +401,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Secreted Flux', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -282,6 +410,18 @@ class res_plotter_generic():
         return fig
 
     def plot_internalflux(self, time_col, meas_cols=None, ncols=5, figsize=None, res_ids=None, **plot_kwargs):
+        """
+        Plot internal flux values over time.
+
+        :param time_col: The name of the time column.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param plot_kwargs: Additional keyword arguments for the plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -320,10 +460,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Internal Flux', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -331,6 +469,19 @@ class res_plotter_generic():
         return fig
 
     def plot_betas(self, time_col, meas_cols=None, ncols=5, figsize=None, res_ids=None, orig_kwargs=None, smooth_kwargs=None):
+        """
+        Plot beta values over time.
+
+        :param time_col: The name of the time column.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param orig_kwargs: Additional keyword arguments for the original plot.
+        :param smooth_kwargs: Additional keyword arguments for the smooth plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -375,10 +526,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Beta', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -390,6 +539,19 @@ class res_plotter_generic():
         return fig
 
     def plot_fracs(self, time_col, meas_cols=None, ncols=5, figsize=None, res_ids=None, orig_kwargs=None, smooth_kwargs=None):
+        """
+        Plot fraction values over time.
+
+        :param time_col: The name of the time column.
+        :param meas_cols: The columns to measure, defaults to None (uses all columns).
+        :param ncols: Number of columns in the subplot layout, defaults to 5.
+        :param figsize: The size of the figure, defaults to None (auto-calculated).
+        :param res_ids: List of resource IDs, defaults to the current index if None.
+        :param orig_kwargs: Additional keyword arguments for the original plot.
+        :param smooth_kwargs: Additional keyword arguments for the smooth plot.
+        :rtype: plt.Figure
+        :return: The figure containing the plots.
+        """
         if res_ids is None:
             res_ids = [self.curr_ind]
 
@@ -432,10 +594,8 @@ class res_plotter_generic():
                 axes[i].get_legend().remove()
                 axes[i].set_xlabel(axes[i].get_xlabel(), fontsize=13)
                 axes[i].set_title(meas_cols[i], fontsize=13, fontweight='bold')
-                axes[i].set_xticks(axes[i].get_xticks())
-                axes[i].set_xticklabels(axes[i].get_xticklabels(), fontsize=12)
-                axes[i].set_yticks(axes[i].get_yticks())
-                axes[i].set_yticklabels(axes[i].get_yticklabels(), fontsize=12)
+                axes[i].tick_params(axis='x', labelsize=12)
+                axes[i].tick_params(axis='y', labelsize=12)
                 axes[i].set_ylabel('Fractions', fontsize=13)
             else:
                 axes[i].set_axis_off()
@@ -447,6 +607,16 @@ class res_plotter_generic():
         return fig
 
     def plot_interactive(self, init_model, port=5000):
+        """
+        Launches an interactive Dash application for glycosylation flux analysis.
+
+        :param init_model: The initial model containing the necessary data for plotting.
+        :type init_model: ModelType  # Replace with the actual type of init_model.
+        :param port: The port on which the Dash application will run. Default is 5000.
+        :type port: int
+        :return: A list containing the nodes and compartments for the Cytoscape graph.
+        :rtype: list
+        """
 
         from dash import Dash, html, Input, Output, State, dcc, ctx, no_update  # , callback
         import dash_cytoscape as cyto
@@ -791,6 +961,24 @@ class res_plotter_generic():
 
 
 def plot_meas(time_col, orig_data, smooth_data=None, meas_cols=None, ncols=3, figsize=(5, 5)):
+    """
+    Plots measurements over time, optionally including smoothed data.
+
+    :param time_col: The column name representing time in the original data.
+    :type time_col: str
+    :param orig_data: The original data containing measurements.
+    :type orig_data: pd.DataFrame
+    :param smooth_data: The smoothed data to be plotted (optional).
+    :type smooth_data: pd.DataFrame, optional
+    :param meas_cols: List of measurement column names to plot (optional). If None, all columns except the time column will be plotted.
+    :type meas_cols: list, optional
+    :param ncols: The number of columns to arrange the subplots in.
+    :type ncols: int
+    :param figsize: The size of the figure.
+    :type figsize: tuple
+    :return: The generated figure containing the plots.
+    :rtype: plt.Figure
+    """
     assert (time_col in orig_data.columns) or (time_col in orig_data.index.names)
     if smooth_data is not None:
         assert (time_col in smooth_data.columns) or (time_col in smooth_data.index.names)
@@ -835,6 +1023,24 @@ def plot_meas(time_col, orig_data, smooth_data=None, meas_cols=None, ncols=3, fi
 
 
 def plot_perturb(time_col, x_col, orig_data, meas_cols=None, ncols=3, figsize=(5, 5)):
+    """
+    Plots perturbations of measurements over a specified axis.
+
+    :param time_col: The column name representing time in the original data.
+    :type time_col: str
+    :param x_col: The column name representing the perturbation variable.
+    :type x_col: str
+    :param orig_data: The original data containing measurements.
+    :type orig_data: pd.DataFrame
+    :param meas_cols: List of measurement column names to plot (optional). If None, all columns except the time column will be plotted.
+    :type meas_cols: list, optional
+    :param ncols: The number of columns to arrange the subplots in.
+    :type ncols: int
+    :param figsize: The size of the figure.
+    :type figsize: tuple
+    :return: The generated figure containing the plots.
+    :rtype: plt.Figure
+    """
     assert (time_col in orig_data.columns) or (time_col in orig_data.index.names)
     assert (x_col in orig_data.columns) or (x_col in orig_data.index.names)
     if meas_cols is None:
@@ -868,6 +1074,22 @@ def plot_perturb(time_col, x_col, orig_data, meas_cols=None, ncols=3, figsize=(5
 
 
 def plot_fig(time_col, data, meas_col, smooth_col=None, ax=None):
+    """
+    Plots a single measurement over time, optionally including a fitted curve.
+
+    :param time_col: The column name representing time in the data.
+    :type time_col: str
+    :param data: The data containing measurements.
+    :type data: pd.DataFrame
+    :param meas_col: The column name representing the measurement to plot.
+    :type meas_col: str
+    :param smooth_col: The column name representing the fitted curve (optional).
+    :type smooth_col: str, optional
+    :param ax: The Axes object to plot on (optional). If None, a new Axes object will be created.
+    :type ax: plt.Axes, optional
+    :return: The generated figure containing the plot.
+    :rtype: plt.Figure
+    """
     assert (time_col in data.columns) or (time_col in data.index.names)
     assert meas_col in data.columns
     if smooth_col is not None:
