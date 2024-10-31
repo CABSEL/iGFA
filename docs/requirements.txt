@@ -1,1 +1,10 @@
 myst-nb
+numpy
+pandas
+scipy
+sympy
+seaborn
+matplotlib
+scikit-learn
+tqdm
+pyomo
