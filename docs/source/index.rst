@@ -11,15 +11,23 @@ iGFA documentation
 .. note::
    This project is under active development.
 
-Installation instructions can be found :doc:`here <installer>`.
+Installation instructions can be found :doc:`here <installation>`.
 Check out the :doc:`usage` section for further information about the project in the :ref:`Functionality <funcs>` tab. 
 Use case tutorials can be found `here <https://github.com/CABSEL/iGFA>`_ :
 
-Contents
---------
+Indices and Tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
 .. toctree::
+   :maxdepth: 2
+   :hidden:
    
-   installer
+   installation
+   contents
    usage
+   tutorials
    api
