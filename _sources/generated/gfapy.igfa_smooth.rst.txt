@@ -1,0 +1,30 @@
+gfapy.igfa\_smooth
+==================
+
+.. automodule:: gfapy.igfa_smooth
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      parse_model
+      res_plotter
+   
+   
+
+   
+   
+   
+
+
+

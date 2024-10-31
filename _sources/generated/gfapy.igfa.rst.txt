@@ -1,0 +1,30 @@
+gfapy.igfa
+==========
+
+.. automodule:: gfapy.igfa
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      parse_model
+      res_plotter
+   
+   
+
+   
+   
+   
+
+
+

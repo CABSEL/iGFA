@@ -1,0 +1,1956 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smoothing Script &#8212; iGFA 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="shortcut icon" href="../_static/igfa_logo.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="smoothing-script">
+<h1>Smoothing Script<a class="headerlink" href="#smoothing-script" title="Permalink to this heading">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;/home/cabsel/gfa/&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">gfapy.curve_fit</span> <span class="kn">import</span> <span class="n">curve_fitter</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mainDir</span> <span class="o">=</span> <span class="s1">&#39;/home/cabsel/gfa/&#39;</span>
+<span class="n">inputDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mainDir</span><span class="p">,</span> <span class="s1">&#39;inputfiles&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="read-gfa-model-from-excel">
+<h2>Read GFA model from Excel<a class="headerlink" href="#read-gfa-model-from-excel" title="Permalink to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expt_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputDir</span><span class="p">,</span> <span class="s1">&#39;smoothed_data_medpH.xlsx&#39;</span><span class="p">),</span> <span class="n">sheet_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;vcd&#39;</span><span class="p">,</span> <span class="s1">&#39;titer&#39;</span><span class="p">,</span> <span class="s1">&#39;frac&#39;</span><span class="p">,</span> <span class="s1">&#39;q_prod_matched&#39;</span><span class="p">])</span>
+<span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">expt_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;vcd&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;VCD_1e6cells_mL&#39;</span><span class="p">:</span> <span class="s1">&#39;VCD (1E6 VC/mL)&#39;</span><span class="p">,</span>
+                                                         <span class="s1">&#39;Time_days&#39;</span><span class="p">:</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span>
+                                                         <span class="s1">&#39;fit_VCD_1e6cells_mL&#39;</span><span class="p">:</span> <span class="s1">&#39;fit_VCD (1E6 VC/mL)&#39;</span><span class="p">})</span><span class="o">.</span>
+                    <span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">))</span>
+<span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">expt_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;titer&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Titer_g_L&#39;</span><span class="p">:</span> <span class="s1">&#39;Titer (g/L)&#39;</span><span class="p">,</span>
+                                                             <span class="s1">&#39;Time_days&#39;</span><span class="p">:</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span>
+                                                             <span class="s1">&#39;fit_Titer_g_L&#39;</span><span class="p">:</span> <span class="s1">&#39;fit_Titer (g/L)&#39;</span><span class="p">})</span><span class="o">.</span>
+                      <span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">))</span>
+<span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Fractions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">expt_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;frac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Time_days&#39;</span><span class="p">:</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0FplusGlcNAc&#39;</span><span class="p">:</span> <span class="s1">&#39;G0F+GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0FplusGlcNac&#39;</span><span class="p">:</span> <span class="s1">&#39;G0F+GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0F_GlcNac&#39;</span><span class="p">:</span> <span class="s1">&#39;G0F-GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0F_GlcNAc&#39;</span><span class="p">:</span> <span class="s1">&#39;G0F-GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0F_GlcNac&#39;</span><span class="p">:</span> <span class="s1">&#39;G0F-GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0_GlcNAc&#39;</span><span class="p">:</span> <span class="s1">&#39;G0-GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G0_GlcNac&#39;</span><span class="p">:</span> <span class="s1">&#39;G0-GlcNAc&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;G1prime&#39;</span><span class="p">:</span> <span class="s1">&#39;G1a/b&#39;</span><span class="p">,</span>
+                                                                <span class="s1">&#39;Man7prime&#39;</span><span class="p">:</span> <span class="s1">&#39;Man7&#39;</span><span class="p">})</span><span class="o">.</span>
+                          <span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;G1Fa/b&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;G1F&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;G1Fprime&#39;</span><span class="p">]})</span><span class="o">.</span>
+                          <span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G1F&#39;</span><span class="p">,</span> <span class="s1">&#39;G1Fprime&#39;</span><span class="p">])</span><span class="o">.</span>
+                          <span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">))</span>
+<span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;q_prod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">expt_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;q_prod_matched&#39;</span><span class="p">)</span><span class="o">.</span>
+                       <span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Spec_prod_pg_cells_day&#39;</span><span class="p">:</span> <span class="s1">&#39;Spec Prod (pg/cells/day)&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;Time_days&#39;</span><span class="p">:</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;Time_windows_days&#39;</span><span class="p">:</span> <span class="s1">&#39;Time window (days)&#39;</span><span class="p">})</span><span class="o">.</span>
+                       <span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">))</span>
+<span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Concentrations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Fractions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">][</span><span class="s1">&#39;Titer (g/L)&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">expt_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">expt_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">expt_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="smooth-data-and-record-all-necessary-variables-in-new-dictionary-trial-and-error-to-find-correct-function">
+<h2>Smooth data and record all necessary variables in new dictionary (Trial and error to find correct function)<a class="headerlink" href="#smooth-data-and-record-all-necessary-variables-in-new-dictionary-trial-and-error-to-find-correct-function" title="Permalink to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span> <span class="o">=</span> <span class="n">expt_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">retrieve_timepoints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="vcd">
+<h3>VCD<a class="headerlink" href="#vcd" title="Permalink to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fit_vcd</span> <span class="o">=</span> <span class="n">curve_fitter</span><span class="p">()</span>
+<span class="n">fit_vcd</span><span class="o">.</span><span class="n">ingest_data</span><span class="p">(</span><span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">x_col</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Choose a model from below keys or &quot;Custom:&quot;
+[&#39;Polynomial&#39;, &#39;Exponential&#39;, &#39;Power&#39;, &#39;Logarithmic&#39;, &#39;Fourier&#39;, &#39;Gaussian&#39;, &#39;Weibull&#39;, &#39;Hill-type&#39;, &#39;Sigmoidal&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<p><b>Logistic: A / (exp(B * x) + C * exp(-D * x)) </b></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vcd_col</span> <span class="o">=</span> <span class="s1">&#39;VCD (1E6 VC/mL)&#39;</span>
+<span class="n">fit_vcd</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">vcd_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "350df8dc94324024ab2e37698043d534", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "f9a3d53edab14dfe8f179a5f8f054312", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">][</span><span class="s1">&#39;fit_&#39;</span><span class="o">+</span><span class="n">vcd_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_vcd</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;fitted&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">][</span><span class="s1">&#39;diff_&#39;</span><span class="o">+</span><span class="n">vcd_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_vcd</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;deriv&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>VCD (1E6 VC/mL)</th>
+      <th>fit_VCD (1E6 VC/mL)</th>
+      <th>diff_VCD (1E6 VC/mL)</th>
+    </tr>
+    <tr>
+      <th>Time (WD)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.784138</td>
+      <td>0.812027</td>
+      <td>0.435732</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.265309</td>
+      <td>1.374260</td>
+      <td>0.705857</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2.100869</td>
+      <td>2.256844</td>
+      <td>1.073020</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3.601440</td>
+      <td>3.532264</td>
+      <td>1.472161</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>5.214883</td>
+      <td>5.156431</td>
+      <td>1.735699</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7.192178</td>
+      <td>6.893591</td>
+      <td>1.675505</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>8.165785</td>
+      <td>8.391412</td>
+      <td>1.275581</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>9.280572</td>
+      <td>9.396539</td>
+      <td>0.731072</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>9.786835</td>
+      <td>9.877230</td>
+      <td>0.252563</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>9.869698</td>
+      <td>9.953180</td>
+      <td>-0.074785</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>9.952553</td>
+      <td>9.773722</td>
+      <td>-0.264768</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>9.787621</td>
+      <td>9.454708</td>
+      <td>-0.361261</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>9.111461</td>
+      <td>9.069461</td>
+      <td>-0.402502</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>8.353707</td>
+      <td>8.659642</td>
+      <td>-0.413579</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="titer">
+<h3>Titer<a class="headerlink" href="#titer" title="Permalink to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fit_titer</span> <span class="o">=</span> <span class="n">curve_fitter</span><span class="p">()</span>
+<span class="n">fit_titer</span><span class="o">.</span><span class="n">ingest_data</span><span class="p">(</span><span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">x_col</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Choose a model from below keys or &quot;Custom:&quot;
+[&#39;Polynomial&#39;, &#39;Exponential&#39;, &#39;Power&#39;, &#39;Logarithmic&#39;, &#39;Fourier&#39;, &#39;Gaussian&#39;, &#39;Weibull&#39;, &#39;Hill-type&#39;, &#39;Sigmoidal&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">titer_col</span> <span class="o">=</span> <span class="s1">&#39;Titer (g/L)&#39;</span>
+<span class="n">fit_titer</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">titer_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e142827478bc4b9fafbe322790fe944e", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "0c579b87133548bab2dd51ab4598306a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">][</span><span class="s1">&#39;fit_&#39;</span><span class="o">+</span><span class="n">titer_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_titer</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;fitted&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">][</span><span class="s1">&#39;diff_&#39;</span><span class="o">+</span><span class="n">titer_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_titer</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;deriv&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Titer (g/L)</th>
+      <th>fit_Titer (g/L)</th>
+      <th>diff_Titer (g/L)</th>
+    </tr>
+    <tr>
+      <th>Time (WD)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.038894</td>
+      <td>0.000785</td>
+      <td>0.002834</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.062556</td>
+      <td>0.009576</td>
+      <td>0.017251</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.100022</td>
+      <td>0.041069</td>
+      <td>0.048891</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.163121</td>
+      <td>0.113737</td>
+      <td>0.099474</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.269600</td>
+      <td>0.245077</td>
+      <td>0.165003</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.429320</td>
+      <td>0.445240</td>
+      <td>0.234872</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.660026</td>
+      <td>0.711372</td>
+      <td>0.294462</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1.038621</td>
+      <td>1.026431</td>
+      <td>0.331127</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1.348201</td>
+      <td>1.364166</td>
+      <td>0.339716</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>1.699189</td>
+      <td>1.697561</td>
+      <td>0.323568</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2.026516</td>
+      <td>2.005844</td>
+      <td>0.291056</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>2.340039</td>
+      <td>2.277226</td>
+      <td>0.251123</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>2.440604</td>
+      <td>2.507908</td>
+      <td>0.210547</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>2.706803</td>
+      <td>2.699458</td>
+      <td>0.173308</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="glycoform-concentrations">
+<h3>Glycoform Concentrations<a class="headerlink" href="#glycoform-concentrations" title="Permalink to this heading">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">retrieve_timepoints</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Concentrations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span>
+                                       <span class="n">rename_axis</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">))</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">retrieve_timepoints</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Concentrations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span>
+                                        <span class="n">rename_axis</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fit_fracs</span> <span class="o">=</span> <span class="n">curve_fitter</span><span class="p">()</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">ingest_data</span><span class="p">(</span><span class="n">expt_data</span><span class="p">[</span><span class="s1">&#39;Concentrations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="n">x_col</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Choose a model from below keys or &quot;Custom:&quot;
+[&#39;Polynomial&#39;, &#39;Exponential&#39;, &#39;Power&#39;, &#39;Logarithmic&#39;, &#39;Fourier&#39;, &#39;Gaussian&#39;, &#39;Weibull&#39;, &#39;Hill-type&#39;, &#39;Sigmoidal&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="man7">
+<h4>Man7<a class="headerlink" href="#man7" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;Man7&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "67bfaefb159b4b849dcac35d058669d3", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "fb35b713dd4a46f4959349172675108e", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.77715414835226e-8*exp(-1.04979682849682*x)/(2.51606683299321e-5 + exp(-1.04979682849682*x))**2
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="man6">
+<h4>Man6<a class="headerlink" href="#man6" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;Man6&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "4d82d39252c1466f98cf678dc251329d", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "86d343778e29476da58c4d2b118a6ff8", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.53674532320441e-5/(x**3.63015880132957*(x**(-2.63015880132957) + 0.000730149475676811)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="man5">
+<h4>Man5<a class="headerlink" href="#man5" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;Man5&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a63fdb91e41b479b9627f55a59d04518", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "80ba35fd0156485fb711d5e64c9f801a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.82512472492164e-5/(x**3.57898807718615*(x**(-2.57898807718615) + 1.48099279331054e-5)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g0-glcnac">
+<h4>G0-GlcNAc<a class="headerlink" href="#g0-glcnac" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G0-GlcNAc&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "6bb30f81c22b4989b9b5cf5135f0d376", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "81f666d5888147538254b0e3c090238c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.20970296762035e-6/(x**3.9857986207357*(x**(-2.9857986207357) - 8.91079207537524e-5)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g0f">
+<h4>G0F<a class="headerlink" href="#g0f" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G0F&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "cfaf844eda31410689fa361f570841a1", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "eb5936183d0b4c2385b3906f100cb0d9", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.00106965824298514/(x**4.9728043624615*(x**(-3.9728043624615) + 9.42588445419789e-5)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g1a-b">
+<h4>G1a/b<a class="headerlink" href="#g1a-b" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G1a/b&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e8b157d7226a45fa8b009be5b1c9c10b", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "049b6366e5f2437da6c86c84a099f769", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.81526914872763e-6*(17.2297568100532*exp(-0.514316349820139*x) + 0.0374374429383844*exp(-0.0374374429383844*x))/(exp(-0.514316349820139*x) + 0.0298504706415847*exp(-0.0374374429383844*x))**2
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g1fa-b">
+<h4>G1Fa/b<a class="headerlink" href="#g1fa-b" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G1Fa/b&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c8ae026536a0451b88bbcdb15024a9ac", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "31f23d2af5d0445fa24c00b782497cf7", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.00238522708675479/(x**4.03582275597052*(x**(-3.03582275597052) + 0.00176704968125774)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g0">
+<h4>G0<a class="headerlink" href="#g0" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G0&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "a685568161b345c1aa6b7076eaa68e79", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "5fdfd815bf9d47d1a8123df93bebe8c0", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9.41441888399936e-5/(x**4.140653237447*(x**(-3.140653237447) + 0.000437837528509634)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g0f-glcnac">
+<h4>G0F-GlcNAc<a class="headerlink" href="#g0f-glcnac" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G0F-GlcNAc&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "463f1091842a4ebba69a1a5d331f5c45", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "2b64d17b7bc24f0e9aa82c7c1519bc0b", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.38019843466825e-5/(x**4.28619872306324*(x**(-3.28619872306324) + 4.59783223097008e-5)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h4>G0F+GlcNAc<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G0F+GlcNAc&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b25270f7fc2e457b900ff0e55c535bd8", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "ef17eda1078544ae841a3dd844f4bd66", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.51813290846332e-5*exp(-0.504806299908199*x)/(0.00380914878275068 + exp(-0.504806299908199*x))**2
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g2f">
+<h4>G2F<a class="headerlink" href="#g2f" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;G2F&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "35e4caec839646c4b01296bd6d00ebec", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "bb4676bea5d844838deaa3c0291d7828", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.000585155264255064/(x**3.59120437541022*(x**(-2.59120437541022) + 0.00854648647909327)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="a1g1f">
+<h4>A1G1F<a class="headerlink" href="#a1g1f" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;A1G1F&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "22092b8424ca4b86b2d6f05b149128b0", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "c1526403d2824e4182bfc1e955244705", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.04061189355436e-5/(x**4.70728372947352*(x**(-3.70728372947352) + 0.000396022275776027)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="a1g2f">
+<h4>A1G2F<a class="headerlink" href="#a1g2f" title="Permalink to this heading">¶</a></h4>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">frac_col</span> <span class="o">=</span> <span class="s1">&#39;A1G2F&#39;</span>
+<span class="n">fit_fracs</span><span class="o">.</span><span class="n">fit_jupyter</span><span class="p">(</span><span class="n">frac_col</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e7cab56c5e934ba6bb7605d93b59d668", "version_major": 2, "version_minor": 0}</script><script type="application/vnd.jupyter.widget-view+json">{"model_id": "30dc186750ea44588f7ddfc8b0a76098", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_fitmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+<span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">][</span><span class="n">frac_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_fracs</span><span class="o">.</span><span class="n">get_diffmodel</span><span class="p">(</span><span class="n">fit_fracs</span><span class="o">.</span><span class="n">current_stats</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])(</span><span class="n">retrieve_timepoints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.000116773396805464/(x**3.22003059056402*(x**(-2.22003059056402) + 0.00621613842908323)**2)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="summary">
+<h1>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;VCD&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>VCD (1E6 VC/mL)</th>
+      <th>fit_VCD (1E6 VC/mL)</th>
+      <th>diff_VCD (1E6 VC/mL)</th>
+    </tr>
+    <tr>
+      <th>Time (WD)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.784138</td>
+      <td>0.812027</td>
+      <td>0.435732</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.265309</td>
+      <td>1.374260</td>
+      <td>0.705857</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2.100869</td>
+      <td>2.256844</td>
+      <td>1.073020</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3.601440</td>
+      <td>3.532264</td>
+      <td>1.472161</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>5.214883</td>
+      <td>5.156431</td>
+      <td>1.735699</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7.192178</td>
+      <td>6.893591</td>
+      <td>1.675505</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>8.165785</td>
+      <td>8.391412</td>
+      <td>1.275581</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>9.280572</td>
+      <td>9.396539</td>
+      <td>0.731072</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>9.786835</td>
+      <td>9.877230</td>
+      <td>0.252563</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>9.869698</td>
+      <td>9.953180</td>
+      <td>-0.074785</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>9.952553</td>
+      <td>9.773722</td>
+      <td>-0.264768</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>9.787621</td>
+      <td>9.454708</td>
+      <td>-0.361261</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>9.111461</td>
+      <td>9.069461</td>
+      <td>-0.402502</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>8.353707</td>
+      <td>8.659642</td>
+      <td>-0.413579</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Titer&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Titer (g/L)</th>
+      <th>fit_Titer (g/L)</th>
+      <th>diff_Titer (g/L)</th>
+    </tr>
+    <tr>
+      <th>Time (WD)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.038894</td>
+      <td>0.000785</td>
+      <td>0.002834</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.062556</td>
+      <td>0.009576</td>
+      <td>0.017251</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.100022</td>
+      <td>0.041069</td>
+      <td>0.048891</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.163121</td>
+      <td>0.113737</td>
+      <td>0.099474</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.269600</td>
+      <td>0.245077</td>
+      <td>0.165003</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.429320</td>
+      <td>0.445240</td>
+      <td>0.234872</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.660026</td>
+      <td>0.711372</td>
+      <td>0.294462</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1.038621</td>
+      <td>1.026431</td>
+      <td>0.331127</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1.348201</td>
+      <td>1.364166</td>
+      <td>0.339716</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>1.699189</td>
+      <td>1.697561</td>
+      <td>0.323568</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2.026516</td>
+      <td>2.005844</td>
+      <td>0.291056</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>2.340039</td>
+      <td>2.277226</td>
+      <td>0.251123</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>2.440604</td>
+      <td>2.507908</td>
+      <td>0.210547</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>2.706803</td>
+      <td>2.699458</td>
+      <td>0.173308</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fractions&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A1G1F</th>
+      <th>A1G2F</th>
+      <th>G0</th>
+      <th>G0F</th>
+      <th>G0F+GlcNAc</th>
+      <th>G0F-GlcNAc</th>
+      <th>G0-GlcNAc</th>
+      <th>G1a/b</th>
+      <th>G2F</th>
+      <th>Man5</th>
+      <th>Man6</th>
+      <th>Man7</th>
+      <th>G1Fa/b</th>
+    </tr>
+    <tr>
+      <th>Time (WD)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5</th>
+      <td>0.003273</td>
+      <td>0.006889</td>
+      <td>0.017714</td>
+      <td>0.596477</td>
+      <td>0.001061</td>
+      <td>0.003714</td>
+      <td>0.000694</td>
+      <td>0.002173</td>
+      <td>0.035255</td>
+      <td>0.008395</td>
+      <td>0.001183</td>
+      <td>0.000395</td>
+      <td>0.319791</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.003273</td>
+      <td>0.002323</td>
+      <td>0.014989</td>
+      <td>0.737378</td>
+      <td>0.002281</td>
+      <td>0.003429</td>
+      <td>0.000488</td>
+      <td>0.001561</td>
+      <td>0.016277</td>
+      <td>0.006052</td>
+      <td>0.001187</td>
+      <td>-0.000018</td>
+      <td>0.208716</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.002805</td>
+      <td>0.002952</td>
+      <td>0.015032</td>
+      <td>0.778474</td>
+      <td>0.002989</td>
+      <td>0.004449</td>
+      <td>0.000684</td>
+      <td>0.001322</td>
+      <td>0.012044</td>
+      <td>0.006597</td>
+      <td>0.001141</td>
+      <td>0.001089</td>
+      <td>0.170732</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.002338</td>
+      <td>0.002234</td>
+      <td>0.015394</td>
+      <td>0.799511</td>
+      <td>0.003371</td>
+      <td>0.005429</td>
+      <td>0.000900</td>
+      <td>0.001249</td>
+      <td>0.009708</td>
+      <td>0.007928</td>
+      <td>0.001109</td>
+      <td>0.001096</td>
+      <td>0.149998</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0.002338</td>
+      <td>0.002062</td>
+      <td>0.015970</td>
+      <td>0.809785</td>
+      <td>0.003985</td>
+      <td>0.007143</td>
+      <td>0.001373</td>
+      <td>0.001215</td>
+      <td>0.008540</td>
+      <td>0.009961</td>
+      <td>0.001285</td>
+      <td>0.001295</td>
+      <td>0.136380</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Concentrations&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A1G1F</th>
+      <th>A1G2F</th>
+      <th>G0</th>
+      <th>G0F</th>
+      <th>G0F+GlcNAc</th>
+      <th>G0F-GlcNAc</th>
+      <th>G0-GlcNAc</th>
+      <th>G1a/b</th>
+      <th>G2F</th>
+      <th>Man5</th>
+      <th>Man6</th>
+      <th>Man7</th>
+      <th>G1Fa/b</th>
+    </tr>
+    <tr>
+      <th>Time (WD)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5</th>
+      <td>0.000882</td>
+      <td>0.001857</td>
+      <td>0.004776</td>
+      <td>0.160811</td>
+      <td>0.000286</td>
+      <td>0.001001</td>
+      <td>0.000187</td>
+      <td>0.000586</td>
+      <td>0.009505</td>
+      <td>0.002263</td>
+      <td>0.000319</td>
+      <td>0.000106</td>
+      <td>0.086216</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.003399</td>
+      <td>0.002413</td>
+      <td>0.015568</td>
+      <td>0.765856</td>
+      <td>0.002369</td>
+      <td>0.003561</td>
+      <td>0.000507</td>
+      <td>0.001621</td>
+      <td>0.016906</td>
+      <td>0.006285</td>
+      <td>0.001233</td>
+      <td>-0.000019</td>
+      <td>0.216777</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.004767</td>
+      <td>0.005016</td>
+      <td>0.025542</td>
+      <td>1.322774</td>
+      <td>0.005079</td>
+      <td>0.007560</td>
+      <td>0.001162</td>
+      <td>0.002246</td>
+      <td>0.020465</td>
+      <td>0.011210</td>
+      <td>0.001940</td>
+      <td>0.001850</td>
+      <td>0.290106</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.005470</td>
+      <td>0.005227</td>
+      <td>0.036023</td>
+      <td>1.870887</td>
+      <td>0.007887</td>
+      <td>0.012703</td>
+      <td>0.002105</td>
+      <td>0.002923</td>
+      <td>0.022717</td>
+      <td>0.018551</td>
+      <td>0.002594</td>
+      <td>0.002564</td>
+      <td>0.351002</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0.006328</td>
+      <td>0.005583</td>
+      <td>0.043227</td>
+      <td>2.191928</td>
+      <td>0.010787</td>
+      <td>0.019334</td>
+      <td>0.003716</td>
+      <td>0.003288</td>
+      <td>0.023116</td>
+      <td>0.026962</td>
+      <td>0.003477</td>
+      <td>0.003504</td>
+      <td>0.369154</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Fit_Concentrations&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A1G1F</th>
+      <th>A1G2F</th>
+      <th>G0</th>
+      <th>G0F</th>
+      <th>G0F+GlcNAc</th>
+      <th>G0F-GlcNAc</th>
+      <th>G0-GlcNAc</th>
+      <th>G1a/b</th>
+      <th>G2F</th>
+      <th>Man5</th>
+      <th>Man6</th>
+      <th>Man7</th>
+      <th>G1Fa/b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.000003</td>
+      <td>0.000052</td>
+      <td>0.000030</td>
+      <td>0.000269</td>
+      <td>0.000082</td>
+      <td>0.000004</td>
+      <td>0.000001</td>
+      <td>0.000097</td>
+      <td>0.000224</td>
+      <td>0.000030</td>
+      <td>0.000006</td>
+      <td>2.388571e-07</td>
+      <td>0.000784</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000036</td>
+      <td>0.000238</td>
+      <td>0.000263</td>
+      <td>0.004221</td>
+      <td>0.000135</td>
+      <td>0.000041</td>
+      <td>0.000009</td>
+      <td>0.000158</td>
+      <td>0.001294</td>
+      <td>0.000181</td>
+      <td>0.000036</td>
+      <td>6.823406e-07</td>
+      <td>0.006352</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000161</td>
+      <td>0.000563</td>
+      <td>0.000932</td>
+      <td>0.021011</td>
+      <td>0.000223</td>
+      <td>0.000155</td>
+      <td>0.000029</td>
+      <td>0.000253</td>
+      <td>0.003392</td>
+      <td>0.000516</td>
+      <td>0.000104</td>
+      <td>1.948752e-06</td>
+      <td>0.021022</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000449</td>
+      <td>0.001006</td>
+      <td>0.002255</td>
+      <td>0.064869</td>
+      <td>0.000365</td>
+      <td>0.000398</td>
+      <td>0.000068</td>
+      <td>0.000396</td>
+      <td>0.006258</td>
+      <td>0.001083</td>
+      <td>0.000218</td>
+      <td>5.561665e-06</td>
+      <td>0.047231</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.000949</td>
+      <td>0.001534</td>
+      <td>0.004397</td>
+      <td>0.152474</td>
+      <td>0.000594</td>
+      <td>0.000825</td>
+      <td>0.000133</td>
+      <td>0.000601</td>
+      <td>0.009412</td>
+      <td>0.001924</td>
+      <td>0.000383</td>
+      <td>1.584083e-05</td>
+      <td>0.084312</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.001651</td>
+      <td>0.002109</td>
+      <td>0.007427</td>
+      <td>0.297708</td>
+      <td>0.000956</td>
+      <td>0.001490</td>
+      <td>0.000231</td>
+      <td>0.000875</td>
+      <td>0.012424</td>
+      <td>0.003078</td>
+      <td>0.000602</td>
+      <td>4.486123e-05</td>
+      <td>0.128615</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.002479</td>
+      <td>0.002695</td>
+      <td>0.011289</td>
+      <td>0.504784</td>
+      <td>0.001511</td>
+      <td>0.002447</td>
+      <td>0.000370</td>
+      <td>0.001209</td>
+      <td>0.015049</td>
+      <td>0.004577</td>
+      <td>0.000870</td>
+      <td>1.250369e-04</td>
+      <td>0.175136</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.003323</td>
+      <td>0.003266</td>
+      <td>0.015813</td>
+      <td>0.763591</td>
+      <td>0.002327</td>
+      <td>0.003740</td>
+      <td>0.000559</td>
+      <td>0.001581</td>
+      <td>0.017217</td>
+      <td>0.006453</td>
+      <td>0.001182</td>
+      <td>3.339065e-04</td>
+      <td>0.219469</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.004092</td>
+      <td>0.003804</td>
+      <td>0.020746</td>
+      <td>1.051493</td>
+      <td>0.003453</td>
+      <td>0.005403</td>
+      <td>0.000811</td>
+      <td>0.001957</td>
+      <td>0.018954</td>
+      <td>0.008733</td>
+      <td>0.001529</td>
+      <td>8.039687e-04</td>
+      <td>0.258881</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.004740</td>
+      <td>0.004297</td>
+      <td>0.025815</td>
+      <td>1.341389</td>
+      <td>0.004876</td>
+      <td>0.007455</td>
+      <td>0.001139</td>
+      <td>0.002306</td>
+      <td>0.020327</td>
+      <td>0.011445</td>
+      <td>0.001901</td>
+      <td>1.584894e-03</td>
+      <td>0.292310</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0.005258</td>
+      <td>0.004742</td>
+      <td>0.030774</td>
+      <td>1.610677</td>
+      <td>0.006491</td>
+      <td>0.009900</td>
+      <td>0.001562</td>
+      <td>0.002614</td>
+      <td>0.021407</td>
+      <td>0.014611</td>
+      <td>0.002288</td>
+      <td>2.401272e-03</td>
+      <td>0.319840</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.005661</td>
+      <td>0.005139</td>
+      <td>0.035439</td>
+      <td>1.845968</td>
+      <td>0.008112</td>
+      <td>0.012721</td>
+      <td>0.002106</td>
+      <td>0.002877</td>
+      <td>0.022260</td>
+      <td>0.018254</td>
+      <td>0.002679</td>
+      <td>2.929413e-03</td>
+      <td>0.342132</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0.005970</td>
+      <td>0.005490</td>
+      <td>0.039695</td>
+      <td>2.042813</td>
+      <td>0.009553</td>
+      <td>0.015883</td>
+      <td>0.002807</td>
+      <td>0.003103</td>
+      <td>0.022937</td>
+      <td>0.022393</td>
+      <td>0.003066</td>
+      <td>3.173732e-03</td>
+      <td>0.360037</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0.006205</td>
+      <td>0.005799</td>
+      <td>0.043490</td>
+      <td>2.202836</td>
+      <td>0.010701</td>
+      <td>0.019336</td>
+      <td>0.003717</td>
+      <td>0.003301</td>
+      <td>0.023478</td>
+      <td>0.027047</td>
+      <td>0.003442</td>
+      <td>3.269164e-03</td>
+      <td>0.374388</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">smoothed_data</span><span class="p">[</span><span class="s1">&#39;Diff_Concentrations&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A1G1F</th>
+      <th>A1G2F</th>
+      <th>G0</th>
+      <th>G0F</th>
+      <th>G0F+GlcNAc</th>
+      <th>G0F-GlcNAc</th>
+      <th>G0-GlcNAc</th>
+      <th>G1a/b</th>
+      <th>G2F</th>
+      <th>Man5</th>
+      <th>Man6</th>
+      <th>Man7</th>
+      <th>G1Fa/b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>0.000010</td>
+      <td>0.000115</td>
+      <td>0.000094</td>
+      <td>0.001069</td>
+      <td>0.000041</td>
+      <td>0.000014</td>
+      <td>0.000003</td>
+      <td>0.000048</td>
+      <td>0.000575</td>
+      <td>0.000078</td>
+      <td>0.000015</td>
+      <td>2.507334e-07</td>
+      <td>0.002377</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000067</td>
+      <td>0.000257</td>
+      <td>0.000412</td>
+      <td>0.008373</td>
+      <td>0.000068</td>
+      <td>0.000067</td>
+      <td>0.000013</td>
+      <td>0.000076</td>
+      <td>0.001595</td>
+      <td>0.000234</td>
+      <td>0.000047</td>
+      <td>7.161719e-07</td>
+      <td>0.009503</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000195</td>
+      <td>0.000389</td>
+      <td>0.000962</td>
+      <td>0.027620</td>
+      <td>0.000111</td>
+      <td>0.000170</td>
+      <td>0.000029</td>
+      <td>0.000117</td>
+      <td>0.002554</td>
+      <td>0.000443</td>
+      <td>0.000090</td>
+      <td>2.044594e-06</td>
+      <td>0.020267</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000389</td>
+      <td>0.000492</td>
+      <td>0.001712</td>
+      <td>0.062965</td>
+      <td>0.000179</td>
+      <td>0.000326</td>
+      <td>0.000051</td>
+      <td>0.000172</td>
+      <td>0.003094</td>
+      <td>0.000698</td>
+      <td>0.000139</td>
+      <td>5.828847e-06</td>
+      <td>0.032039</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.000609</td>
+      <td>0.000558</td>
+      <td>0.002585</td>
+      <td>0.114683</td>
+      <td>0.000286</td>
+      <td>0.000537</td>
+      <td>0.000080</td>
+      <td>0.000239</td>
+      <td>0.003140</td>
+      <td>0.000992</td>
+      <td>0.000192</td>
+      <td>1.655038e-05</td>
+      <td>0.041484</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.000783</td>
+      <td>0.000586</td>
+      <td>0.003466</td>
+      <td>0.176578</td>
+      <td>0.000447</td>
+      <td>0.000803</td>
+      <td>0.000117</td>
+      <td>0.000307</td>
+      <td>0.002843</td>
+      <td>0.001321</td>
+      <td>0.000244</td>
+      <td>4.645938e-05</td>
+      <td>0.046252</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.000854</td>
+      <td>0.000583</td>
+      <td>0.004230</td>
+      <td>0.235860</td>
+      <td>0.000675</td>
+      <td>0.001118</td>
+      <td>0.000163</td>
+      <td>0.000359</td>
+      <td>0.002398</td>
+      <td>0.001682</td>
+      <td>0.000291</td>
+      <td>1.263242e-04</td>
+      <td>0.046037</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.000818</td>
+      <td>0.000557</td>
+      <td>0.004774</td>
+      <td>0.277831</td>
+      <td>0.000966</td>
+      <td>0.001473</td>
+      <td>0.000218</td>
+      <td>0.000379</td>
+      <td>0.001943</td>
+      <td>0.002074</td>
+      <td>0.000331</td>
+      <td>3.153108e-04</td>
+      <td>0.042175</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.000712</td>
+      <td>0.000516</td>
+      <td>0.005046</td>
+      <td>0.293292</td>
+      <td>0.001283</td>
+      <td>0.001856</td>
+      <td>0.000287</td>
+      <td>0.000366</td>
+      <td>0.001543</td>
+      <td>0.002492</td>
+      <td>0.000361</td>
+      <td>6.398031e-04</td>
+      <td>0.036481</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.000582</td>
+      <td>0.000470</td>
+      <td>0.005051</td>
+      <td>0.282654</td>
+      <td>0.001545</td>
+      <td>0.002250</td>
+      <td>0.000372</td>
+      <td>0.000330</td>
+      <td>0.001215</td>
+      <td>0.002935</td>
+      <td>0.000381</td>
+      <td>8.702574e-04</td>
+      <td>0.030401</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0.000457</td>
+      <td>0.000421</td>
+      <td>0.004837</td>
+      <td>0.253702</td>
+      <td>0.001653</td>
+      <td>0.002637</td>
+      <td>0.000479</td>
+      <td>0.000285</td>
+      <td>0.000957</td>
+      <td>0.003401</td>
+      <td>0.000391</td>
+      <td>6.992117e-04</td>
+      <td>0.024775</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.000352</td>
+      <td>0.000373</td>
+      <td>0.004474</td>
+      <td>0.216192</td>
+      <td>0.001558</td>
+      <td>0.002999</td>
+      <td>0.000616</td>
+      <td>0.000243</td>
+      <td>0.000757</td>
+      <td>0.003888</td>
+      <td>0.000391</td>
+      <td>3.642221e-04</td>
+      <td>0.019954</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0.000269</td>
+      <td>0.000329</td>
+      <td>0.004030</td>
+      <td>0.177821</td>
+      <td>0.001304</td>
+      <td>0.003317</td>
+      <td>0.000795</td>
+      <td>0.000210</td>
+      <td>0.000603</td>
+      <td>0.004394</td>
+      <td>0.000383</td>
+      <td>1.496321e-04</td>
+      <td>0.015997</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0.000205</td>
+      <td>0.000289</td>
+      <td>0.003559</td>
+      <td>0.143035</td>
+      <td>0.000988</td>
+      <td>0.003578</td>
+      <td>0.001037</td>
+      <td>0.000187</td>
+      <td>0.000484</td>
+      <td>0.004917</td>
+      <td>0.000369</td>
+      <td>5.556953e-05</td>
+      <td>0.012826</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+<div class="section" id="write-to-excel">
+<h1>Write to excel<a class="headerlink" href="#write-to-excel" title="Permalink to this heading">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputDir</span><span class="p">,</span> <span class="s1">&#39;Lee et al&#39;</span><span class="p">,</span> <span class="s1">&#39;medpH_processed.xlsx&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">smoothed_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/igfa_logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">iGFA</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;MIT License.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tutorials/smooth_medpH.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

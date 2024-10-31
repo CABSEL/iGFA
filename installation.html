@@ -19,6 +19,8 @@
     <link rel="shortcut icon" href="_static/igfa_logo.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Table of Contents" href="contents.html" />
+    <link rel="prev" title="iGFA documentation" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -37,9 +39,36 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
-<p>To use iGFA, first install it using pip:</p>
+<p>Installation of iGFA can be done using pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>igfa
 </pre></div>
+</div>
+<p>In addition, iGFA relies on IPOPT solver for the NLP optimization.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>IPOPT’s default installation uses the MUMPS linear solver (which iGFA uses). To configure more powerful solvers, refer to <a class="reference external" href="https://cyipopt.readthedocs.io/en/stable/install.html">cyipopt documentation</a></p>
+</div>
+<div class="section" id="installing-ipopt-for-linux">
+<h2>Installing IPOPT for Linux<a class="headerlink" href="#installing-ipopt-for-linux" title="Permalink to this heading">¶</a></h2>
+<p>For Linux, IPOPT can be installed using conda:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>cyipopt
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-ipopt-for-mac-windows">
+<h2>Installing IPOPT for Mac/Windows<a class="headerlink" href="#installing-ipopt-for-mac-windows" title="Permalink to this heading">¶</a></h2>
+<p>There are issues with installing the latest version of IPOPT on Windows/Mac. However, users can make use of the 3.11.1 version installable with conda as:
+.. code-block:: console</p>
+<blockquote>
+<div><p>(.venv) $ conda install -c conda-forge ipopt==3.11.1</p>
+</div></blockquote>
+</div>
+<div class="section" id="testing-installation-of-ipopt">
+<h2>Testing Installation of IPOPT<a class="headerlink" href="#testing-installation-of-ipopt" title="Permalink to this heading">¶</a></h2>
+<p>The following command should list the version of IPOPT that is installed. If this doesn’t work, the IPOPT istallation has been unsuccessful.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>ipopt<span class="w"> </span>-v
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -63,8 +92,13 @@
 
 
 <h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-ipopt-for-linux">Installing IPOPT for Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-ipopt-for-mac-windows">Installing IPOPT for Mac/Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-installation-of-ipopt">Testing Installation of IPOPT</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="contents.html">Table of Contents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
@@ -75,6 +109,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">iGFA documentation</a></li>
+      <li>Next: <a href="contents.html" title="next chapter">Table of Contents</a></li>
   </ul></li>
 </ul>
 </div>
@@ -108,7 +144,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/installer.rst.txt"
+      <a href="_sources/installation.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

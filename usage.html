@@ -1,22 +1,26 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Usage &#8212; iGFA 0.1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="shortcut icon" href="_static/igfa_logo.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API" href="api.html" />
-    <link rel="prev" title="Installation" href="installer.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="gfapy.plotter" href="generated/gfapy.plotter.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -34,10 +38,839 @@
           <div class="body" role="main">
             
   <div class="section" id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h1>
 <div class="section" id="functionality">
-<span id="funcs"></span><h2>Functionality<a class="headerlink" href="#functionality" title="Permalink to this headline">¶</a></h2>
+<span id="funcs"></span><h2>Functionality<a class="headerlink" href="#functionality" title="Permalink to this heading">¶</a></h2>
 <p>The curve fitter can be used for smoothing the data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gfapy.curve_fit.</span></span><span class="sig-name descname"><span class="pre">curve_fitter</span></span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for fitting data to various mathematical models such as Polynomial, Exponential, Power, Logarithmic, 
+Fourier, Gaussian, Weibull, Hill-type, and Sigmoidal models. It also allows custom model expressions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the CurveFitter object by defining a set of mathematical models and their variations. The user
+can select from these models or provide a custom function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.curr_model_name">
+<span class="sig-name descname"><span class="pre">curr_model_name</span></span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.curr_model_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of model to be chosen by user using choose_model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model to be chosen by user using choose_model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.current_stats">
+<span class="sig-name descname"><span class="pre">current_stats</span></span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.current_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of details about fit populated . You can retrieve the fitted and derivative function by using the methods get_fitmodel and get_diffmodel</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.ingest_data">
+<span class="sig-name descname"><span class="pre">ingest_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.ingest_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ingests the dataset to be used for curve fitting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The dataset containing the independent and dependent variables.</p></li>
+<li><p><strong>x_col</strong> (<em>str</em>) – The column name representing the independent variable (x).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.choose_model">
+<span class="sig-name descname"><span class="pre">choose_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.choose_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects a predefined model or allows the user to choose a custom model. If the model has suboptions, choose_submodel needs to be run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model_name</strong> (<em>str</em>) – The name of the model to choose from the predefined set of models or ‘Custom’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.choose_submodel">
+<span class="sig-name descname"><span class="pre">choose_submodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">submodel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.choose_submodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects a submodel from the chosen model if applicable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>submodel_name</strong> (<em>str</em>) – The name of the submodel to select.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.custom_func">
+<span class="sig-name descname"><span class="pre">custom_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.custom_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a custom model expression when the ‘Custom’ model option is selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model_string</strong> (<em>str</em>) – A string representing the custom mathematical model in Python syntax.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.calc_diff">
+<span class="sig-name descname"><span class="pre">calc_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitted_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.calc_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the derivative of the fitted model with respect to the independent variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitted_params</strong> (<em>dict</em>) – The parameters of the fitted model.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The derivative values of the fitted model for the data’s x-values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.get_diffmodel">
+<span class="sig-name descname"><span class="pre">get_diffmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitted_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.get_diffmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the symbolic derivative of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitted_params</strong> (<em>dict</em>) – The parameters of the fitted model.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A function that computes the derivative values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.get_fitmodel">
+<span class="sig-name descname"><span class="pre">get_fitmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitted_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.get_fitmodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the symbolic model after substituting the fitted parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fitted_params</strong> (<em>dict</em>) – The parameters of the fitted model.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A function representing the fitted model.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the chosen model to the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_col</strong> (<em>str</em>) – The column name representing the dependent variable (y).</p></li>
+<li><p><strong>start_params</strong> (<em>list</em><em> or </em><em>None</em>) – (optional) Initial guesses for the model parameters. If None, default guesses are used.</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments to pass to the curve fitting function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple containing the fitted parameters, fitted y-values, the statistical results, and the plot axis.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.curve_fit.curve_fitter.fit_jupyter">
+<span class="sig-name descname"><span class="pre">fit_jupyter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.curve_fit.curve_fitter.fit_jupyter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the chosen model to the dataset and displays the fitted results interactively in a Jupyter notebook environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>y_col</strong> (<em>str</em>) – The column name representing the dependent variable (y).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gfapy.igfa_fitflux.</span></span><span class="sig-name descname"><span class="pre">res_plotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rxn_meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(WD)'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">res_plotter_generic</span></code></p>
+<p>A class used to plot and analyze flux perturbations based on model results.</p>
+<p>Inherits from res_plotter_generic.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rxn_meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(WD)'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the res_plotter object with results data and metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> (<em>pd.DataFrame</em><em> or </em><em>dict</em>) – results data from the model.</p></li>
+<li><p><strong>multi_result</strong> (<em>bool</em>) – whether the results contain multiple datasets (default False).</p></li>
+<li><p><strong>met_meta</strong> (<em>dict</em><em> or </em><em>None</em>) – metadata for metabolites (default None).</p></li>
+<li><p><strong>rxn_meta</strong> (<em>dict</em><em> or </em><em>None</em>) – metadata for reactions (default None).</p></li>
+<li><p><strong>name</strong> (<em>str</em><em> or </em><em>None</em>) – the name of the dataset (default None).</p></li>
+<li><p><strong>time_col_name</strong> (<em>str</em><em> or </em><em>None</em>) – name of the column containing time data (default ‘Time (WD)’).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.fetch_nominal_vars">
+<span class="sig-name descname"><span class="pre">fetch_nominal_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.fetch_nominal_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract and organize the nominal fluxes from the result dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>result</strong> (<em>dict</em>) – containing ‘secreted_flux’, ‘internal_flux’, and ‘entry_flux’ data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>organized nominal flux data for secreted, internal, and entry fluxes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_secretedflux">
+<span class="sig-name descname"><span class="pre">plot_secretedflux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_secretedflux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot secreted flux data over time, comparing measured and predicted values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> (<em>str</em>) – name of the column containing time data.</p></li>
+<li><p><strong>meas_cols</strong> (<em>list</em><em> of </em><em>str</em><em> or </em><em>None</em>) – list of columns to be plotted (default None).</p></li>
+<li><p><strong>ncols</strong> (<em>int</em>) – number of columns in the plot grid (default 5).</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em> or </em><em>None</em>) – size of the figure (default None).</p></li>
+<li><p><strong>res_ids</strong> (<em>list</em><em> or </em><em>None</em>) – result IDs for predicted fluxes (default None).</p></li>
+<li><p><strong>orig_kwargs</strong> (<em>dict</em><em> or </em><em>None</em>) – additional keyword arguments for the measured data plot (default None).</p></li>
+<li><p><strong>smooth_kwargs</strong> (<em>dict</em><em> or </em><em>None</em>) – additional keyword arguments for the predicted data plot (default None).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Matplotlib figure, the plotted figure.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ignore</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.get_pertresults">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_pertresults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.get_pertresults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract perturbation results from a Pyomo model instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance</strong> (<em>pyo.ConcreteModel</em>) – the instance of the model containing perturbation results.</p></li>
+<li><p><strong>time_col_name</strong> (<em>str</em>) – name of the column containing time data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>perturbation results for secreted flux, internal flux, and other variables.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.perturb_alpha">
+<span class="sig-name descname"><span class="pre">perturb_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nominal_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_opts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_fullresults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.perturb_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform perturbation analysis on alpha parameters in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>pyo.ConcreteModel</em>) – the model used for perturbation analysis.</p></li>
+<li><p><strong>perc_keys</strong> (<em>list</em><em> of </em><em>str</em>) – the keys (enzymes) to perturb.</p></li>
+<li><p><strong>perc_val</strong> (<em>float</em>) – the perturbation percentage (default 0.1).</p></li>
+<li><p><strong>nominal_result</strong> (<em>dict</em><em> or </em><em>None</em>) – nominal results to use for comparison (default None).</p></li>
+<li><p><strong>solver_opts</strong> (<em>dict</em><em> or </em><em>None</em>) – solver options for Pyomo (default None).</p></li>
+<li><p><strong>get_fullresults</strong> (<em>bool</em>) – whether to return the full perturbation results (default False).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>depending on the value of get_fullresults, returns normalized secreted flux and internal flux perturbations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple or dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.perturb_vref">
+<span class="sig-name descname"><span class="pre">perturb_vref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nominal_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_opts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_fullresults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.perturb_vref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform perturbation analysis on reference velocities (vref) in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>pyo.ConcreteModel</em>) – the model used for perturbation analysis.</p></li>
+<li><p><strong>perc_keys</strong> (<em>list</em><em> of </em><em>str</em>) – the keys (reactions) to perturb.</p></li>
+<li><p><strong>perc_val</strong> (<em>float</em>) – the perturbation percentage (default 0.1).</p></li>
+<li><p><strong>nominal_result</strong> (<em>dict</em><em> or </em><em>None</em>) – nominal results to use for comparison (default None).</p></li>
+<li><p><strong>solver_opts</strong> (<em>dict</em><em> or </em><em>None</em>) – solver options for Pyomo (default None).</p></li>
+<li><p><strong>get_fullresults</strong> (<em>bool</em>) – whether to return the full perturbation results (default False).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>depending on the value of get_fullresults, returns normalized secreted flux and internal flux perturbations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple or dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_perturb">
+<span class="sig-name descname"><span class="pre">plot_perturb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">perturb_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_perturb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot perturbation data using a bar plot, with optional customization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>perturb_data</strong> (<em>pd.DataFrame</em>) – perturbation results to be plotted.</p></li>
+<li><p><strong>x_col</strong> (<em>str</em>) – Column to be used as the x-axis (usually enzyme or reaction name).</p></li>
+<li><p><strong>time_col</strong> (<em>str</em>) – Column indicating time points.</p></li>
+<li><p><strong>meas_cols</strong> (<em>list</em><em> of </em><em>str</em><em> or </em><em>None</em>) – List of columns to be plotted (default None).</p></li>
+<li><p><strong>ncols</strong> (<em>int</em>) – Number of columns in the plot grid (default 5).</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em> or </em><em>None</em>) – Size of the figure (default None).</p></li>
+<li><p><strong>plot_kwargs</strong> (<em>dict</em>) – Additional keyword arguments for the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The plotted figure.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ignore</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.choose_top_n">
+<span class="sig-name descname"><span class="pre">choose_top_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ascending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.choose_top_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chooses the top N results based on the specified objective column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj_col</strong> (<em>str</em>) – The column name for objectives to sort by.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – The number of top results to return.</p></li>
+<li><p><strong>ascending</strong> (<em>bool</em>) – Whether to sort in ascending order.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of the top N result indices.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.get_params_n">
+<span class="sig-name descname"><span class="pre">get_params_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.get_params_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves parameters for a given list of results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_res</strong> (<em>list</em>) – A list of result indices.</p></li>
+<li><p><strong>param_col</strong> (<em>str</em>) – The column name of the parameters to retrieve.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A DataFrame of the specified parameters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_alphas">
+<span class="sig-name descname"><span class="pre">plot_alphas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_alphas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the alpha values over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> (<em>str</em>) – The name of the time column.</p></li>
+<li><p><strong>meas_cols</strong> (<em>list</em><em>, </em><em>optional</em>) – The measurement columns to plot.</p></li>
+<li><p><strong>ncols</strong> (<em>int</em>) – The number of columns in the plot grid.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em>, </em><em>optional</em>) – The size of the figure.</p></li>
+<li><p><strong>res_ids</strong> (<em>list</em><em>, </em><em>optional</em>) – The result IDs to plot.</p></li>
+<li><p><strong>plot_kwargs</strong> – Additional keyword arguments for plotting.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created figure.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plt.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_betas">
+<span class="sig-name descname"><span class="pre">plot_betas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_betas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot beta values over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> – The name of the time column.</p></li>
+<li><p><strong>meas_cols</strong> – The columns to measure, defaults to None (uses all columns).</p></li>
+<li><p><strong>ncols</strong> – Number of columns in the subplot layout, defaults to 5.</p></li>
+<li><p><strong>figsize</strong> – The size of the figure, defaults to None (auto-calculated).</p></li>
+<li><p><strong>res_ids</strong> – List of resource IDs, defaults to the current index if None.</p></li>
+<li><p><strong>orig_kwargs</strong> – Additional keyword arguments for the original plot.</p></li>
+<li><p><strong>smooth_kwargs</strong> – Additional keyword arguments for the smooth plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The figure containing the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_entry_flux">
+<span class="sig-name descname"><span class="pre">plot_entry_flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(WD)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_entry_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot entry flux values over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> – The name of the time column, defaults to ‘Time (WD)’.</p></li>
+<li><p><strong>meas_cols</strong> – The columns to measure, defaults to None (uses all columns).</p></li>
+<li><p><strong>ncols</strong> – Number of columns in the subplot layout, defaults to 5.</p></li>
+<li><p><strong>figsize</strong> – The size of the figure, defaults to None (auto-calculated).</p></li>
+<li><p><strong>res_ids</strong> – List of resource IDs, defaults to the current index if None.</p></li>
+<li><p><strong>plot_kwargs</strong> – Additional keyword arguments for the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The figure containing the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_fracs">
+<span class="sig-name descname"><span class="pre">plot_fracs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_fracs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot fraction values over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> – The name of the time column.</p></li>
+<li><p><strong>meas_cols</strong> – The columns to measure, defaults to None (uses all columns).</p></li>
+<li><p><strong>ncols</strong> – Number of columns in the subplot layout, defaults to 5.</p></li>
+<li><p><strong>figsize</strong> – The size of the figure, defaults to None (auto-calculated).</p></li>
+<li><p><strong>res_ids</strong> – List of resource IDs, defaults to the current index if None.</p></li>
+<li><p><strong>orig_kwargs</strong> – Additional keyword arguments for the original plot.</p></li>
+<li><p><strong>smooth_kwargs</strong> – Additional keyword arguments for the smooth plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The figure containing the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_gamma">
+<span class="sig-name descname"><span class="pre">plot_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(WD)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot gamma values over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> – The name of the time column, defaults to ‘Time (WD)’.</p></li>
+<li><p><strong>meas_cols</strong> – The columns to measure, defaults to None (uses all columns).</p></li>
+<li><p><strong>ncols</strong> – Number of columns in the subplot layout, defaults to 5.</p></li>
+<li><p><strong>figsize</strong> – The size of the figure, defaults to None (auto-calculated).</p></li>
+<li><p><strong>res_ids</strong> – List of resource IDs, defaults to the current index if None.</p></li>
+<li><p><strong>plot_kwargs</strong> – Additional keyword arguments for the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The figure containing the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_interactive">
+<span class="sig-name descname"><span class="pre">plot_interactive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_interactive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches an interactive Dash application for glycosylation flux analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_model</strong> (<em>ModelType  # Replace with the actual type</em><em> of </em><em>init_model.</em>) – The initial model containing the necessary data for plotting.</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – The port on which the Dash application will run. Default is 5000.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list containing the nodes and compartments for the Cytoscape graph.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_internalflux">
+<span class="sig-name descname"><span class="pre">plot_internalflux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_internalflux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot internal flux values over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> – The name of the time column.</p></li>
+<li><p><strong>meas_cols</strong> – The columns to measure, defaults to None (uses all columns).</p></li>
+<li><p><strong>ncols</strong> – Number of columns in the subplot layout, defaults to 5.</p></li>
+<li><p><strong>figsize</strong> – The size of the figure, defaults to None (auto-calculated).</p></li>
+<li><p><strong>res_ids</strong> – List of resource IDs, defaults to the current index if None.</p></li>
+<li><p><strong>plot_kwargs</strong> – Additional keyword arguments for the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The figure containing the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.plot_vref">
+<span class="sig-name descname"><span class="pre">plot_vref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Reactions'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.plot_vref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot reference flux values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_col</strong> – The name of the x-axis column, defaults to ‘Reactions’.</p></li>
+<li><p><strong>meas_cols</strong> – The columns to measure, defaults to None (uses all columns).</p></li>
+<li><p><strong>ncols</strong> – Number of columns in the subplot layout, defaults to 5.</p></li>
+<li><p><strong>figsize</strong> – The size of the figure, defaults to None (auto-calculated).</p></li>
+<li><p><strong>res_ids</strong> – List of resource IDs, defaults to the current index if None.</p></li>
+<li><p><strong>plot_kwargs</strong> – Additional keyword arguments for the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plt.Figure</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The figure containing the plots.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.sel_compartment">
+<span class="sig-name descname"><span class="pre">sel_compartment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.sel_compartment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the results for a specific compartment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>comp</strong> (<em>int</em>) – The compartment index to select.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.sel_result">
+<span class="sig-name descname"><span class="pre">sel_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Main'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.sel_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects a specific result by index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>res_index</strong> (<em>str</em>) – The index of the result to select.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the index is not found in the results.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.res_plotter.summarize_runs">
+<span class="sig-name descname"><span class="pre">summarize_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.res_plotter.summarize_runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Summarizes the simulation runs and generates a styled report.
+:param n_show: Number of top results to show statistics for.
+:type n_show: int
+:return: A styled DataFrame summary of the runs.
+:rtype: pd.io.formats.style.Styler</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gfapy.igfa_fitflux.</span></span><span class="sig-name descname"><span class="pre">parse_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stoich</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_rxns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">parse_model_generic</span></code></p>
+<p>A class to model and analyze the glycoform production based on the provided stoichiometric and feature metadata.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>time_col_name (str): The name of the time column in the data.
+spec_prod (DataFrame): Specific production data.
+glyco_flux (DataFrame): Glycoform flux data.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stoich</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">met_meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lin_rxns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the parse_model instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stoich</strong> (<em>DataFrame</em>) – Stoichiometric coefficients.</p></li>
+<li><p><strong>feat_meta</strong> (<em>DataFrame</em>) – Feature metadata.</p></li>
+<li><p><strong>met_meta</strong> (<em>DataFrame</em>) – Metabolite metadata.</p></li>
+<li><p><strong>n_comp</strong> (<em>int</em>) – Number of components in the model.</p></li>
+<li><p><strong>lin_rxns</strong> (<em>DataFrame</em>) – Linear reactions.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the model (optional).</p></li>
+<li><p><strong>author</strong> (<em>str</em><em>, </em><em>optional</em>) – Author of the model (optional).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.read_measurements">
+<span class="sig-name descname"><span class="pre">read_measurements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(WD)'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.read_measurements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read measurements from the given data.</p>
+<p>met_meta and frac should have same glycoform IDs
+All keys in data should have timepoints (float/int) as index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>DataFrame</em>) – Data containing measurements.</p></li>
+<li><p><strong>time_col_name</strong> (<em>str</em>) – Column name for time data, default is ‘Time (WD)’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If ‘met_meta’ and ‘frac’ do not have matching glycoform IDs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.fetch_data">
+<span class="sig-name descname"><span class="pre">fetch_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spec_prod_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spec</span> <span class="pre">Prod</span> <span class="pre">(pg/cells/day)'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.fetch_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch and organize relevant data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>spec_prod_col</strong> (<em>str</em>) – Column name for Specific Production, default is ‘Spec Prod (pg/cells/day)’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary containing organized data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.create_pyomomodel">
+<span class="sig-name descname"><span class="pre">create_pyomomodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit_beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fitted'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularize_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.create_pyomomodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and configure the Pyomo model for optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fit_beta</strong> (<em>str</em>) – Flag indicating whether to fit beta parameters (default is ‘fitted’). Can be ‘fitted’, ‘measured’ or None. If None, betas will not be fitted to secreted flux ratio</p></li>
+<li><p><strong>regularize_params</strong> (<em>bool</em>) – Flag indicating whether to apply regularization (default is True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Configured Pyomo model instance.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pyo.AbstractModel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.get_results">
+<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.get_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the results from the optimization model instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instance</strong> (<em>pyo.AbstractModel</em>) – The Pyomo model instance containing optimization results.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary containing the results of the model.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.create_perturb_model">
+<span class="sig-name descname"><span class="pre">create_perturb_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.create_perturb_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a perturbation model for analyzing the effects of parameter changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A Pyomo model for perturbation analysis.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pyo.AbstractModel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.run_multistart">
+<span class="sig-name descname"><span class="pre">run_multistart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rand'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.run_multistart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a multi-start optimization for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance</strong> (<em>pyo.ConcreteModel</em>) – The Pyomo model instance to be solved.</p></li>
+<li><p><strong>strategy</strong> (<em>str</em><em>, </em><em>optional</em>) – The strategy for multi-start optimization (default is ‘rand’).</p></li>
+<li><p><strong>iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of iterations to run (default is 100).</p></li>
+<li><p><strong>suppress_warning</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to suppress warnings (default is True).</p></li>
+<li><p><strong>solver_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>any</em><em>]</em><em>, </em><em>optional</em>) – Additional solver options to configure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple containing the results dictionary and the status run dictionary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple[dict[int, any], dict[str, list[int]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gfapy.igfa_fitflux.parse_model.run_singlestart">
+<span class="sig-name descname"><span class="pre">run_singlestart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.igfa_fitflux.parse_model.run_singlestart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a single-start optimization for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance</strong> (<em>pyo.ConcreteModel</em>) – The Pyomo model instance to be solved.</p></li>
+<li><p><strong>solver_options</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>any</em><em>]</em><em>, </em><em>optional</em>) – Additional solver options to configure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary containing the results of the optimization.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict[str, any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gfapy.plotter.plot_fig">
+<span class="sig-prename descclassname"><span class="pre">gfapy.plotter.</span></span><span class="sig-name descname"><span class="pre">plot_fig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.plotter.plot_fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a single measurement over time, optionally including a fitted curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> (<em>str</em>) – The column name representing time in the data.</p></li>
+<li><p><strong>data</strong> (<em>pd.DataFrame</em>) – The data containing measurements.</p></li>
+<li><p><strong>meas_col</strong> (<em>str</em>) – The column name representing the measurement to plot.</p></li>
+<li><p><strong>smooth_col</strong> (<em>str</em><em>, </em><em>optional</em>) – The column name representing the fitted curve (optional).</p></li>
+<li><p><strong>ax</strong> (<em>plt.Axes</em><em>, </em><em>optional</em>) – The Axes object to plot on (optional). If None, a new Axes object will be created.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The generated figure containing the plot.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plt.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gfapy.plotter.plot_meas">
+<span class="sig-prename descclassname"><span class="pre">gfapy.plotter.</span></span><span class="sig-name descname"><span class="pre">plot_meas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(5,</span> <span class="pre">5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.plotter.plot_meas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots measurements over time, optionally including smoothed data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> (<em>str</em>) – The column name representing time in the original data.</p></li>
+<li><p><strong>orig_data</strong> (<em>pd.DataFrame</em>) – The original data containing measurements.</p></li>
+<li><p><strong>smooth_data</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – The smoothed data to be plotted (optional).</p></li>
+<li><p><strong>meas_cols</strong> (<em>list</em><em>, </em><em>optional</em>) – List of measurement column names to plot (optional). If None, all columns except the time column will be plotted.</p></li>
+<li><p><strong>ncols</strong> (<em>int</em>) – The number of columns to arrange the subplots in.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – The size of the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The generated figure containing the plots.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plt.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gfapy.plotter.plot_perturb">
+<span class="sig-prename descclassname"><span class="pre">gfapy.plotter.</span></span><span class="sig-name descname"><span class="pre">plot_perturb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meas_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(5,</span> <span class="pre">5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gfapy.plotter.plot_perturb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots perturbations of measurements over a specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_col</strong> (<em>str</em>) – The column name representing time in the original data.</p></li>
+<li><p><strong>x_col</strong> (<em>str</em>) – The column name representing the perturbation variable.</p></li>
+<li><p><strong>orig_data</strong> (<em>pd.DataFrame</em>) – The original data containing measurements.</p></li>
+<li><p><strong>meas_cols</strong> (<em>list</em><em>, </em><em>optional</em>) – List of measurement column names to plot (optional). If None, all columns except the time column will be plotted.</p></li>
+<li><p><strong>ncols</strong> (<em>int</em>) – The number of columns to arrange the subplots in.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – The size of the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The generated figure containing the plots.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plt.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
@@ -48,6 +881,9 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/igfa_logo.png" alt="Logo"/>
+            </a></p>
 <h1 class="logo"><a href="index.html">iGFA</a></h1>
 
 
@@ -59,11 +895,13 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installer.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contents.html">Table of Contents</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#functionality">Functionality</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
@@ -71,8 +909,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="installer.html" title="previous chapter">Installation</a></li>
-      <li>Next: <a href="api.html" title="next chapter">API</a></li>
+      <li>Previous: <a href="generated/gfapy.plotter.html" title="previous chapter">gfapy.plotter</a></li>
+      <li>Next: <a href="tutorials.html" title="next chapter">Tutorials</a></li>
   </ul></li>
 </ul>
 </div>
@@ -80,12 +918,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -99,10 +937,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2024, Shriramprasad V, Rudiyanto Gunawan.
+      &copy;MIT License.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
