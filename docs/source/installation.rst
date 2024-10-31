@@ -26,6 +26,7 @@ Installing IPOPT for Mac/Windows
 --------------------------------
 
 There are issues with installing the latest version of IPOPT on Windows/Mac. However, users can make use of the 3.11.1 version installable with conda as:
+
 .. code-block:: console
 
    (.venv) $ conda install -c conda-forge ipopt==3.11.1
