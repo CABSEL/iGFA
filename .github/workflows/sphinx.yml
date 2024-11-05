@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build HTML
-      uses: ammaraskar/sphinx-action@master
+      uses: ammaraskar/sphinx-action@5.2.0
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
