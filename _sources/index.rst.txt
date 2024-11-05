@@ -13,7 +13,7 @@ iGFA documentation
 
 Installation instructions can be found :doc:`here <installation>`.
 Check out the :doc:`usage` section for further information about the project in the :ref:`Functionality <funcs>` tab. 
-Use case tutorials can be found `here <https://github.com/CABSEL/iGFA/docs/source/tutorials>`_ :
+Use case tutorials can be found `here <https://github.com/CABSEL/iGFA/tree/main/docs/source/tutorials>`_ :
 
 Indices and Tables
 ------------------
