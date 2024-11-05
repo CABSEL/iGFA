@@ -3,15 +3,17 @@ requires = ["setuptools>=60.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gfapy"
-version = "1.0.0.1"
+name = "igfa"
+version = "1.0.0.2"
 description = "Glycosylation Flux Analysis Toolbox in Python"
 authors = [
-    {name = "Shriramprasad"},    
+    {name = "Shriramprasad"},   
+    {name = "Sriram Neelamegham"}, 
     {name = "Rudiyanto Gunawan"}
 ]
 
 maintainers = [{name = "Rudiyanto Gunawan", email = "rgunawan@buffalo.edu"}]
+
 readme = "README.md"  # Optional: path to README file
 license = {text = "MIT"}
 requires-python = ">=3.10"
@@ -46,3 +48,8 @@ dev = [
     "black",
     "flake8",
 ]  # Optional development dependencies
+
+[project.urls]
+Homepage = "https://github.com/CABSEL/iGFA"
+Issues = "https://github.com/CABSEL/iGFA/issues"
+
