@@ -1027,13 +1027,18 @@ None
 </div>
 <div class="section" id="multi-start">
 <h2>Multi start<a class="headerlink" href="#multi-start" title="Permalink to this heading">¶</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_dict</span><span class="p">,</span> <span class="n">status_run</span> <span class="o">=</span> <span class="n">init_model</span><span class="o">.</span><span class="n">run_multistart</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;rand_guess_and_bound&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">suppress_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                                                      <span class="n">solver_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;print_level&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>  <span class="c1"># &#39;tol&#39;: 1e-5, &#39;constr_viol_tol&#39;: 1e-5</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">{"model_id": "b66c975bc6a74b1e9c0b0f422d5b4dc6", "version_major": 2, "version_minor": 0}</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>------------------------------------------------------------------------------
 Ipopt 3.14.16: max_iter=100000
@@ -7653,6 +7658,7 @@ Solution:
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 </div>
 <div class="section" id="save-results">
