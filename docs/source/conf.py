@@ -46,6 +46,7 @@ nb_execution_mode = "off"
 html_theme = 'alabaster'
 html_theme_options = {
     'page_width': 'auto',
+    'body_max_width' : 'none'
 }
 html_static_path = ['_static']
 html_logo = "_static/igfa_logo.png"
