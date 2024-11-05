@@ -74,7 +74,12 @@
    "execution_count": 4,
    "id": "eccbaa86-5650-4562-b0c9-7cc7e8315d34",
    "metadata": {
-    "scrolled": true
+    "editable": true,
+    "scrolled": true,
+    "slideshow": {
+     "slide_type": ""
+    },
+    "tags": []
    },
    "outputs": [
     {
@@ -1297,14 +1302,7 @@
    "execution_count": 15,
    "id": "5cbcc73c-5f62-4ad5-b79d-d27f07184fb5",
    "metadata": {
-    "editable": true,
-    "scrolled": true,
-    "slideshow": {
-     "slide_type": ""
-    },
-    "tags": [
-     "hide-output"
-    ]
+    "scrolled": true
    },
    "outputs": [
     {
@@ -7981,7 +7979,14 @@
    "execution_count": 16,
    "id": "aaa42984-f1f4-4ebc-9534-94a625b4c8e3",
    "metadata": {
-    "scrolled": true
+    "editable": true,
+    "scrolled": true,
+    "slideshow": {
+     "slide_type": ""
+    },
+    "tags": [
+     "hide-output"
+    ]
    },
    "outputs": [
     {

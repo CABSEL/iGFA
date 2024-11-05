@@ -1,22 +1,20 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Installation &#8212; iGFA 0.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=df3fedd5" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=19b3dfee" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <link rel="shortcut icon" href="_static/igfa_logo.png"/>
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=087ae23c" />
+    <script src="_static/documentation_options.js?v=2709fde1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/igfa_logo.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Table of Contents" href="contents.html" />
@@ -24,8 +22,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -37,8 +36,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
 <p>Installation of iGFA can be done using pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>igfa
 </pre></div>
@@ -48,38 +47,38 @@
 <p class="admonition-title">Note</p>
 <p>IPOPT’s default installation uses the MUMPS linear solver (which iGFA uses). To configure more powerful solvers, refer to <a class="reference external" href="https://cyipopt.readthedocs.io/en/stable/install.html">cyipopt documentation</a></p>
 </div>
-<div class="section" id="installing-ipopt-for-linux">
-<h2>Installing IPOPT for Linux<a class="headerlink" href="#installing-ipopt-for-linux" title="Permalink to this heading">¶</a></h2>
+<section id="installing-ipopt-for-linux">
+<h2>Installing IPOPT for Linux<a class="headerlink" href="#installing-ipopt-for-linux" title="Link to this heading">¶</a></h2>
 <p>For Linux, IPOPT can be installed using conda:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>cyipopt
 </pre></div>
 </div>
-</div>
-<div class="section" id="installing-ipopt-for-mac-windows">
-<h2>Installing IPOPT for Mac/Windows<a class="headerlink" href="#installing-ipopt-for-mac-windows" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="installing-ipopt-for-mac-windows">
+<h2>Installing IPOPT for Mac/Windows<a class="headerlink" href="#installing-ipopt-for-mac-windows" title="Link to this heading">¶</a></h2>
 <p>There are issues with installing the latest version of IPOPT on Windows/Mac. However, users can make use of the 3.11.1 version installable with conda as:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span><span class="nv">ipopt</span><span class="o">==</span><span class="m">3</span>.11.1
 </pre></div>
 </div>
-</div>
-<div class="section" id="testing-installation-of-ipopt">
-<h2>Testing Installation of IPOPT<a class="headerlink" href="#testing-installation-of-ipopt" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="testing-installation-of-ipopt">
+<h2>Testing Installation of IPOPT<a class="headerlink" href="#testing-installation-of-ipopt" title="Link to this heading">¶</a></h2>
 <p>The following command should list the version of IPOPT that is installed. If this doesn’t work, the IPOPT istallation has been unsuccessful.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>ipopt<span class="w"> </span>-v
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/igfa_logo.png" alt="Logo"/>
+              <img class="logo" src="_static/igfa_logo.png" alt="Logo of iGFA"/>
             </a></p>
 <h1 class="logo"><a href="index.html">iGFA</a></h1>
 
@@ -90,7 +89,16 @@
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installing-ipopt-for-linux">Installing IPOPT for Linux</a></li>
@@ -113,16 +121,6 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -136,11 +134,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;MIT License.
+      &#169;MIT License.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/installation.rst.txt"

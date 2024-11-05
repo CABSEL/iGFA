@@ -1,33 +1,32 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Main script to run iGFA &#8212; iGFA 0.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=df3fedd5" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=19b3dfee" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ae23c" />
+    <script src="../_static/documentation_options.js?v=2709fde1"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script type="application/vnd.jupyter.widget-state+json">{"state": {"0be01d6467254dddad7d28b8fd69aec8": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "ProgressStyleModel", "state": {"description_width": ""}}, "15f1d4e2bce749d8b6652dfba66bd802": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"description_width": "", "font_size": null, "text_color": null}}, "6572465126a74ebdb5b65f2878b1000d": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {}}, "6f5d7d174f5d46a4b33c00d789ad55e3": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"layout": "IPY_MODEL_e3f1c70432c34e6b831852ae81a5473e", "style": "IPY_MODEL_15f1d4e2bce749d8b6652dfba66bd802", "value": "Progress\u2007(Optimal:\u200777,\u2007MaxIterations:\u20070,\u2007Error:\u20070):\u2007:\u2007100%"}}, "9928d5b2a1d44595aa4a004eefb84d13": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLModel", "state": {"layout": "IPY_MODEL_6572465126a74ebdb5b65f2878b1000d", "style": "IPY_MODEL_de7a34210ce34b4ead01863d0eb1f827", "value": "\u2007100/100\u2007[00:47&lt;00:00]"}}, "9a5184bb63624474bba2d9a1232b1682": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {}}, "b66c975bc6a74b1e9c0b0f422d5b4dc6": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HBoxModel", "state": {"children": ["IPY_MODEL_6f5d7d174f5d46a4b33c00d789ad55e3", "IPY_MODEL_d6f20521ea1040498b4c7156db8fef82", "IPY_MODEL_9928d5b2a1d44595aa4a004eefb84d13"], "layout": "IPY_MODEL_9a5184bb63624474bba2d9a1232b1682"}}, "d6f20521ea1040498b4c7156db8fef82": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "FloatProgressModel", "state": {"bar_style": "success", "layout": "IPY_MODEL_daa419d41c67482f9b9c6b1799d9dc6b", "style": "IPY_MODEL_0be01d6467254dddad7d28b8fd69aec8", "value": 100}}, "daa419d41c67482f9b9c6b1799d9dc6b": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {}}, "de7a34210ce34b4ead01863d0eb1f827": {"model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "model_name": "HTMLStyleModel", "state": {"description_width": "", "font_size": null, "text_color": null}}, "e3f1c70432c34e6b831852ae81a5473e": {"model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "model_name": "LayoutModel", "state": {}}}, "version_major": 2, "version_minor": 0}</script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
-    <link rel="shortcut icon" href="../_static/igfa_logo.png"/>
+    <link rel="icon" href="../_static/igfa_logo.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Curve Fitter" href="curve_fit_tutorial.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -39,8 +38,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="main-script-to-run-igfa">
-<h1>Main script to run iGFA<a class="headerlink" href="#main-script-to-run-igfa" title="Permalink to this heading">¶</a></h1>
+  <section id="main-script-to-run-igfa">
+<h1>Main script to run iGFA<a class="headerlink" href="#main-script-to-run-igfa" title="Link to this heading">¶</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -82,8 +81,8 @@
 </div>
 </div>
 </div>
-<div class="section" id="read-gfa-model-from-excel">
-<h2>Read GFA model from Excel<a class="headerlink" href="#read-gfa-model-from-excel" title="Permalink to this heading">¶</a></h2>
+<section id="read-gfa-model-from-excel">
+<h2>Read GFA model from Excel<a class="headerlink" href="#read-gfa-model-from-excel" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rxn_models</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputDir</span><span class="p">,</span> <span class="s1">&#39;Lee et al&#39;</span><span class="p">,</span> <span class="s1">&#39;Leeetal_model.xlsx&#39;</span><span class="p">),</span> <span class="n">sheet_name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -847,9 +846,9 @@
 </table>
 </div></div></div>
 </div>
-</div>
-<div class="section" id="read-and-format-data">
-<h2>Read and format data<a class="headerlink" href="#read-and-format-data" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="read-and-format-data">
+<h2>Read and format data<a class="headerlink" href="#read-and-format-data" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pH_scale</span> <span class="o">=</span> <span class="s1">&#39;highpH&#39;</span>
@@ -918,9 +917,9 @@ $$</p>
 <img alt="../_images/eab28086fccdfdc65118e3d8af9c906fe52ad788747f8f3bc6247835dca5a575.png" src="../_images/eab28086fccdfdc65118e3d8af9c906fe52ad788747f8f3bc6247835dca5a575.png" />
 </div>
 </div>
-</div>
-<div class="section" id="initialize-igfa-and-ingest-experimental-measurements-into-igfa-s-class">
-<h2>Initialize iGFA and ingest experimental measurements into iGFA’s class<a class="headerlink" href="#initialize-igfa-and-ingest-experimental-measurements-into-igfa-s-class" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="initialize-igfa-and-ingest-experimental-measurements-into-igfa-s-class">
+<h2>Initialize iGFA and ingest experimental measurements into iGFA’s class<a class="headerlink" href="#initialize-igfa-and-ingest-experimental-measurements-into-igfa-s-class" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">linear_rxns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;R1&#39;</span><span class="p">,</span> <span class="s1">&#39;R2&#39;</span><span class="p">,</span> <span class="s1">&#39;R3&#39;</span><span class="p">]</span>  <span class="c1"># &#39;R1&#39;, &#39;R2&#39;, &#39;R3&#39;, &#39;R4&#39;, &#39;R5&#39;, &#39;R8&#39;, &#39;R6&#39;, &#39;R7&#39;, &#39;R9&#39;, &#39;R10&#39;, &#39;R11&#39;, &#39;R12&#39;, &#39;R13&#39;, &#39;R14&#39;, &#39;R15&#39;</span>
@@ -1005,9 +1004,9 @@ None
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="single-start">
-<h2>Single start<a class="headerlink" href="#single-start" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="single-start">
+<h2>Single start<a class="headerlink" href="#single-start" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># result = init_model.run_singlestart(instance)</span>
@@ -1024,21 +1023,16 @@ None
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="multi-start">
-<h2>Multi start<a class="headerlink" href="#multi-start" title="Permalink to this heading">¶</a></h2>
-<div class="cell tag_hide-output docutils container">
-<div class="cell_input above-output-prompt docutils container">
+</section>
+<section id="multi-start">
+<h2>Multi start<a class="headerlink" href="#multi-start" title="Link to this heading">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_dict</span><span class="p">,</span> <span class="n">status_run</span> <span class="o">=</span> <span class="n">init_model</span><span class="o">.</span><span class="n">run_multistart</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;rand_guess_and_bound&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">suppress_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                                                      <span class="n">solver_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;print_level&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>  <span class="c1"># &#39;tol&#39;: 1e-5, &#39;constr_viol_tol&#39;: 1e-5</span>
 </pre></div>
 </div>
 </div>
-<details class="hide below-input">
-<summary aria-label="Toggle hidden content">
-<span class="collapsed">Show code cell output</span>
-<span class="expanded">Hide code cell output</span>
-</summary>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">{"model_id": "b66c975bc6a74b1e9c0b0f422d5b4dc6", "version_major": 2, "version_minor": 0}</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>------------------------------------------------------------------------------
 Ipopt 3.14.16: max_iter=100000
@@ -7658,11 +7652,10 @@ Solution:
 </pre></div>
 </div>
 </div>
-</details>
 </div>
-</div>
-<div class="section" id="save-results">
-<h2>Save results<a class="headerlink" href="#save-results" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="save-results">
+<h2>Save results<a class="headerlink" href="#save-results" title="Link to this heading">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pickle_out = open(os.path.join(mainDir, &#39;results&#39;, &#39;Lee et al&#39;, pH_scale+&#39;_fitlux_fitbeta.pickle&#39;), &#39;wb&#39;)</span>
@@ -7672,16 +7665,21 @@ Solution:
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="visualization">
-<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">¶</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
+</section>
+<section id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Link to this heading">¶</a></h2>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res_data</span> <span class="o">=</span> <span class="n">res_plotter</span><span class="p">(</span><span class="n">results_dict</span><span class="p">,</span> <span class="n">multi_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">met_meta</span><span class="o">=</span><span class="n">met_meta</span><span class="p">,</span> <span class="n">rxn_meta</span><span class="o">=</span><span class="n">rxn_meta</span><span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="n">res_data</span><span class="o">.</span><span class="n">summarize_runs</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output text_html"><style type="text/css">
 #T_7247e th:not(.index_name) {
@@ -8621,6 +8619,7 @@ Solution:
   </tbody>
 </table>
 </div></div>
+</details>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -8650,8 +8649,8 @@ Results class (name=None) with 100 experiments (Active=58):
 </div>
 </div>
 </div>
-<div class="section" id="secreted-fluxes">
-<h3>Secreted Fluxes<a class="headerlink" href="#secreted-fluxes" title="Permalink to this heading">¶</a></h3>
+<section id="secreted-fluxes">
+<h3>Secreted Fluxes<a class="headerlink" href="#secreted-fluxes" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_secretedflux</span><span class="p">(</span><span class="n">time_col</span><span class="o">=</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">smooth_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;markersize&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
@@ -8665,9 +8664,9 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/2435eb4854b487f7fce4ee0bd7994180e27e7363bbb28c178486c3c15d8930bb.png" src="../_images/2435eb4854b487f7fce4ee0bd7994180e27e7363bbb28c178486c3c15d8930bb.png" />
 </div>
 </div>
-</div>
-<div class="section" id="alpha">
-<h3>Alpha<a class="headerlink" href="#alpha" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="alpha">
+<h3>Alpha<a class="headerlink" href="#alpha" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_alphas</span><span class="p">(</span><span class="n">time_col</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -8681,9 +8680,9 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/b0bbccf8d941d97c8a95dd71d564e7830bab6150b17d7502abcadd5dcd761ecb.png" src="../_images/b0bbccf8d941d97c8a95dd71d564e7830bab6150b17d7502abcadd5dcd761ecb.png" />
 </div>
 </div>
-</div>
-<div class="section" id="beta">
-<h3>Beta<a class="headerlink" href="#beta" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="beta">
+<h3>Beta<a class="headerlink" href="#beta" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_betas</span><span class="p">(</span><span class="n">time_col</span> <span class="o">=</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">)</span>
@@ -8694,9 +8693,9 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/7d9ccdcb3f6a57f49cb4370869c2b5339d09c504838a8f5dcf5fcc73fda71bee.png" src="../_images/7d9ccdcb3f6a57f49cb4370869c2b5339d09c504838a8f5dcf5fcc73fda71bee.png" />
 </div>
 </div>
-</div>
-<div class="section" id="gamma">
-<h3>Gamma<a class="headerlink" href="#gamma" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="gamma">
+<h3>Gamma<a class="headerlink" href="#gamma" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_gamma</span><span class="p">(</span><span class="n">time_col</span> <span class="o">=</span> <span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">)</span>
@@ -8710,9 +8709,9 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/305da6a6bb2218abca97fe1cbec449757770eab67d5061dcca72265ddfc3fdb1.png" src="../_images/305da6a6bb2218abca97fe1cbec449757770eab67d5061dcca72265ddfc3fdb1.png" />
 </div>
 </div>
-</div>
-<div class="section" id="entry-flux">
-<h3>Entry Flux<a class="headerlink" href="#entry-flux" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="entry-flux">
+<h3>Entry Flux<a class="headerlink" href="#entry-flux" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_entry_flux</span><span class="p">(</span><span class="n">time_col</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">)</span>
@@ -8740,9 +8739,9 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/b039703b64b5084991a479a1ff54e384fc9b76525df38aafdbbb6ecd02db14b4.png" src="../_images/b039703b64b5084991a479a1ff54e384fc9b76525df38aafdbbb6ecd02db14b4.png" />
 </div>
 </div>
-</div>
-<div class="section" id="reference-fluxes">
-<h3>Reference Fluxes<a class="headerlink" href="#reference-fluxes" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="reference-fluxes">
+<h3>Reference Fluxes<a class="headerlink" href="#reference-fluxes" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_vref</span><span class="p">(</span><span class="n">x_col</span><span class="o">=</span><span class="s1">&#39;Reaction ID&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">)</span>
@@ -8784,9 +8783,9 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/5e289960eb3ef0762bea15fcd6a4b89d5c7fbe703705a8a70b16cee73fc38c23.png" src="../_images/5e289960eb3ef0762bea15fcd6a4b89d5c7fbe703705a8a70b16cee73fc38c23.png" />
 </div>
 </div>
-</div>
-<div class="section" id="internal-fluxes">
-<h3>Internal Fluxes<a class="headerlink" href="#internal-fluxes" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="internal-fluxes">
+<h3>Internal Fluxes<a class="headerlink" href="#internal-fluxes" title="Link to this heading">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">res_data</span><span class="o">.</span><span class="n">plot_internalflux</span><span class="p">(</span><span class="n">time_col</span><span class="o">=</span><span class="s1">&#39;Time (WD)&#39;</span><span class="p">,</span> <span class="n">meas_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_ids</span><span class="o">=</span><span class="n">top_n_results</span><span class="p">)</span>
@@ -8800,19 +8799,19 @@ Results class (name=None) with 100 experiments (Active=58):
 <img alt="../_images/fce055070097037b12ce8032e3a7dfb0dffdb8fd6613dec729664cf46876d482.png" src="../_images/fce055070097037b12ce8032e3a7dfb0dffdb8fd6613dec729664cf46876d482.png" />
 </div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/igfa_logo.png" alt="Logo"/>
+              <img class="logo" src="../_static/igfa_logo.png" alt="Logo of iGFA"/>
             </a></p>
 <h1 class="logo"><a href="../index.html">iGFA</a></h1>
 
@@ -8823,7 +8822,16 @@ Results class (name=None) with 100 experiments (Active=58):
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contents.html">Table of Contents</a></li>
@@ -8846,16 +8854,6 @@ Results class (name=None) with 100 experiments (Active=58):
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -8869,11 +8867,11 @@ Results class (name=None) with 100 experiments (Active=58):
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;MIT License.
+      &#169;MIT License.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../_sources/tutorials/igfa_fitflux_fitbeta-perturb.ipynb.txt"

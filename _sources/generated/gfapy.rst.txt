@@ -4,34 +4,14 @@
 .. automodule:: gfapy
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
 .. rubric:: Modules
 
 .. autosummary::
    :toctree:
    :recursive:
 
-   gfapy.curve_fit
-   gfapy.gfa_fitflux
-   gfapy.igfa
-   gfapy.igfa_fitflux
-   gfapy.igfa_smooth
-   gfapy.model
-   gfapy.plotter
-
+   curve_fit
+   igfa_fitflux
+   gfa_fitflux
+   model
+   plotter

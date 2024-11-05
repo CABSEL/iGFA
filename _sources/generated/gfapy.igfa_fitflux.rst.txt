@@ -4,15 +4,6 @@ gfapy.igfa\_fitflux
 .. automodule:: gfapy.igfa_fitflux
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
    .. rubric:: Classes
 
    .. autosummary::
@@ -20,11 +11,3 @@ gfapy.igfa\_fitflux
       parse_model
       res_plotter
    
-   
-
-   
-   
-   
-
-
-
