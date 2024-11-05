@@ -7,6 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import pathlib
 import sys
+
 code_folder = pathlib.Path(__file__).parents[2].resolve()/'src'
 sys.path.insert(0, code_folder.as_posix())
 
