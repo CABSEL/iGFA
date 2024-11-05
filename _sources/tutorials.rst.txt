@@ -2,7 +2,7 @@ Tutorials
 =========
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 0
    
    tutorials/curve_fit_tutorial
    tutorials/smooth_medpH
